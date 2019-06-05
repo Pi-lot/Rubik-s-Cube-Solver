@@ -504,6 +504,54 @@ namespace CubeSolver {
             }
         }
 
+        private static List<byte[]> CheckSeen(List<byte[]> seen) {
+            try {
+                Console.WriteLine("Checking {0} seen combinations in background thread", seen.Count);
+                var time = Stopwatch.StartNew();
+
+                List<byte[]> s = new List<byte[]>();
+                if (seen.Count > 0) {
+                    s.Add(seen[0]);
+                    seen.RemoveAt(0);
+
+                    int numSame = 0;
+
+                    for (int i = 0; i < seen.Count; i++) {
+                        bool same = false;
+                        for (int j = 0; j < s.Count; j++) {
+                            if (seen[i].SequenceEqual(s[j])) {
+                                numSame++;
+                                same = true;
+                                break;
+                            }
+                        }
+
+                        if (!same)
+                            s.Add(seen[i]);
+                    }
+
+                    time.Stop();
+
+                    Console.WriteLine("Check Finished. Removed {0} duplicates, new size is {1}", numSame, s.Count);
+                    Console.WriteLine("Ran in {0}ms", time.ElapsedMilliseconds);
+
+                    return s;
+                } else
+                    return seen;
+            } catch (Exception e) {
+                Console.WriteLine(e.ToString());
+                return seen;
+            }
+        }
+
+        static async Task<List<byte[]>> CheckSeenAsync(List<byte[]> seen) {
+            var checkSeen = Task.Run(() => CheckSeen(seen));
+
+            var result = await checkSeen;
+
+            return result;
+        }
+
         static void Smart() {
             Console.WriteLine("Entered Other Test Mode");
 
@@ -524,8 +572,12 @@ namespace CubeSolver {
 
                 var sw = Stopwatch.StartNew();
 
+                var seen = CheckSeenAsync(seenCombinations);
+
                 for (int i = toTestCombinations.Count - 1; i >= 0; i--) {
                     for (int j = 0; j < 12; j++) {
+                        if (toTestCombinations[i] == null)
+                            break;
                         Cube.Positions[] test = new Cube.Positions[toTestCombinations[i].Length];
                         for (int k = 0; k < test.Length; k++)
                             test[k] = (Cube.Positions)toTestCombinations[i][k];
@@ -597,69 +649,45 @@ namespace CubeSolver {
                             newCombination.RemoveAt(i);
                         }
                     } else {
-                        Console.WriteLine("Checking {0} combinations against {1} combinations for duplicates...", newCombination.Count, seenCombinations.Count);
+                        Console.WriteLine("Adding combinations to test list");
 
                         sw = Stopwatch.StartNew();
-                        int startNum = newCombination.Count();
-                        int numSeen = 0;
 
-                        //for (int i = newCombination.Count - 1; i >= 0; i--) {
-                        //    bool seen = true;
-                        //    for (int j = 0; j < seenCombinations.Count; j++) {
-                        //        BitArray n = new BitArray(newCombination[i]);
-                        //        BitArray s = new BitArray(seenCombinations[j]);
-
-                        //        s.Not();
-                        //        for (int k = 0; k < n.Count; k++) {
-                        //            for (int x = 0; x < s.Count; x++) {
-                        //                if (n[k] & s[x]) {
-                        //                    seen = false;
-                        //                }
-                        //            }
-
-                        //            if (!seen)
-                        //                break;
-                        //        }
-
-                        //        if (!seen) {
-                        //            break;
-                        //        }
-
-                        //        numSeen++;
-                        //    }
-
-                        //    if (!seen) {
-                        //        seenCombinations.Add(newCombination[i]);
-                        //        toTestCombinations.Add(newCombination[i]);
-                        //    }
-
-                        //    newCombination.RemoveAt(i);
-                        //}
-
-                        for (int i = newCombination.Count - 1; i >= 0; i--) {
-                            bool seen = false;
+                        Parallel.For(0, newCombination.Count, i => {
+                            bool same = false;
                             for (int j = 0; j < seenCombinations.Count; j++) {
                                 if (newCombination[i].SequenceEqual(seenCombinations[j])) {
-                                    numSeen++;
-                                    seen = true;
+                                    same = true;
                                     break;
                                 }
                             }
 
-                            if (!seen) {
-                                seenCombinations.Add(newCombination[i]);
+                            if (!same) {
                                 toTestCombinations.Add(newCombination[i]);
                             }
-
-                            newCombination.RemoveAt(i);
-                        }
+                        });
+                        //for (int i = newCombination.Count - 1; i >= 0; i--) {
+                            
+                        //}
 
                         sw.Stop();
+
+                        Console.Write("Waiting for seen checks... ");
+                        seen.Wait();
+                        Console.WriteLine("Done");
+
+                        seenCombinations.Clear();
+                        foreach (byte[] pos in seen.Result)
+                            seenCombinations.Add(pos);
+                        seen.Dispose();
+
+                        foreach (byte[] pos in newCombination)
+                            seenCombinations.Add(pos);
 
                         newCombination.Clear();
 
                         Console.WriteLine("Done. Took {0}ms to check.", sw.ElapsedMilliseconds);
-                        Console.WriteLine("Added {1} combinations to test. Already seen {0} combinations", startNum - toTestCombinations.Count + numSeen, toTestCombinations.Count());
+                        Console.WriteLine("Added {0} combinations to test", toTestCombinations.Count());
                     }
                     count++;
 
@@ -1616,7 +1644,7 @@ namespace CubeSolver {
             //Seq();
             //    }
             //} else if (mode.Equals("Smart")) {
-            //Smart();
+            Smart();
             //} else if (mode.Equals("Tree")) {
             //    Tree();
             //} else if (mode.Equals("Manual")) { // Manual solving mode. User solves the cube manually, controlling it by input the side to rotate and clockwise or not
@@ -1624,7 +1652,7 @@ namespace CubeSolver {
             //} else { // Random solving mode. Just makes random moves on the cube till it's solved, printing milestones as it goes (every 100,000th move).
             //    Random();
             //}
-            SmartWithHelp();
+            //SmartWithHelp();
             //Threaded();
 
             Console.WriteLine("Cube Solved!!!");
