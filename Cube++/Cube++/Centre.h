@@ -1,5 +1,11 @@
 #pragma once
 #include "Piece.h"
-class Centre :
-	public Piece {
-};
+#include "Cube.h"
+
+namespace RubiksCube {
+	class Centre {//: Piece {
+	public:
+		Centre(Cube::Colours);
+		~Centre();
+	};
+}

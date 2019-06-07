@@ -1,5 +1,9 @@
 #pragma once
 #include "Piece.h"
-class Corner :
-	public Piece {
-};
+#include "Cube.h"
+
+namespace RubiksCube {
+	class Corner {//:
+		//public Piece {
+	};
+}

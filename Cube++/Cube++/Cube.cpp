@@ -1,9 +1,11 @@
 #include "Cube.h"
 
+using namespace RubiksCube;
+
 Cube::Cube() {
 }
 
-Cube::Cube(Cube* cube) {
+Cube::Cube(Cube cube) {
 }
 
 Cube::Cube(Positions* positions[]) {
@@ -12,10 +14,10 @@ Cube::Cube(Positions* positions[]) {
 Cube::~Cube() {
 }
 
-void Cube::SetPositions(Positions* Side[]) {
+void Cube::SetPositions(Positions Side[]) {
 }
 
-bool Cube::SamePositions(Positions* otherPositions[]) {
+bool Cube::SamePositions(Positions otherPositions[]) {
 	return false;
 }
 
