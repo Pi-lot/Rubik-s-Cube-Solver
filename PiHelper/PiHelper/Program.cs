@@ -181,8 +181,6 @@ namespace PiHelper {
 
                     data = RecieveData(handler);
 
-                    data = Reorganise(data, 1024);
-
                     Console.Write("Sending back for clarification... ");
                     foreach (byte[] b in data)
                         handler.Send(b.ToArray());
