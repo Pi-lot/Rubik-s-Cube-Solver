@@ -111,6 +111,7 @@ namespace PiHelper {
                     d[i] = list[0];
                     list.RemoveAt(0);
                 }
+                b.Add(d);
             }
             b.Reverse();
             b.Distinct();
