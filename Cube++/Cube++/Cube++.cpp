@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <chrono>
 
-using namespace RubiksCube;
+//using namespace RubiksCube;
 
 int main() {
 	std::cout << "Hello World!\n";

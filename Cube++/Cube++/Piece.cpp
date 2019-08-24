@@ -1,6 +1,5 @@
 #include "Piece.h"
 
-using namespace RubiksCube;
 
 void Piece::RotateAroundSide(Cube::Positions side, bool clockwise) {
 }
@@ -13,11 +12,11 @@ Cube::PieceTypes Piece::GetPieceType() {
 	return Cube::PieceTypes();
 }
 
-Cube::Colours RubiksCube::Piece::GetColours() {
+Cube::Colours Piece::GetColours() {
 	return Cube::Colours();
 }
 
-Cube::Positions RubiksCube::Piece::GetPositions() {
+Cube::Positions Piece::GetPositions() {
 	return Cube::Positions();
 }
 

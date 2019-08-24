@@ -1,12 +1,10 @@
 #include "Cube.h"
 
-using namespace RubiksCube;
-
 Cube::Cube() {
 }
 
-Cube::Cube(Cube cube) {
-}
+//Cube::Cube(Cube cube) {
+//}
 
 Cube::Cube(Positions* positions[]) {
 }

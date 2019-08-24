@@ -220,6 +220,7 @@ namespace PiHelper {
         }
 
         static void Main(string[] args) {
+            Console.WriteLine(System.Environment.ProcessorCount);
             StartListening();
             Console.WriteLine("Stopping");
         }
