@@ -23,5 +23,5 @@ void Cube::RotateSide(Positions, bool) {
 }
 
 bool Cube::IsSolved() {
-	return false;
+	return true;
 }

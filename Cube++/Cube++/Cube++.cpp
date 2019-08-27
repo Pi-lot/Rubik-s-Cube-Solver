@@ -7,10 +7,12 @@
 #include <stdlib.h>
 #include <chrono>
 
-//using namespace RubiksCube;
+using namespace std;
 
 int main() {
-	std::cout << "Hello World!\n";
+	cout << "Hello World!\n";
+	Cube cube;
+	cout << cube.IsSolved();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

@@ -10,12 +10,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using RubiksCube;
+using System.Security.Cryptography;
 
 namespace CubeSolver {
     class Program {
         static private Cube cube;
         static private Cube[] randSolver;
-        static private Random random;
+        static private RNGCryptoServiceProvider random;
         static private readonly Cube.Positions[] original = new Cube().GetPositions();
 
         static bool solved = false;
@@ -667,7 +668,7 @@ namespace CubeSolver {
                             }
                         });
                         //for (int i = newCombination.Count - 1; i >= 0; i--) {
-                            
+
                         //}
 
                         sw.Stop();
@@ -1463,7 +1464,9 @@ namespace CubeSolver {
                 int count = 0;
 
                 while (!solved) {
-                    int num = random.Next(12);
+                    byte[] b = new byte[1];
+                    random.GetBytes(b);
+                    int num = b[0] % 12;
                     MoveCubeSide(num, randSolver[i]);
                     count++;
 
@@ -1478,6 +1481,195 @@ namespace CubeSolver {
                     }
                 }
             });
+        }
+
+        static Tuple<Cube, byte, bool> ApplyMove(Cube cube, int i) {
+            Tuple<Cube, byte, bool> moveInfo = null;
+            switch (i) {
+                case 0:
+                    cube.RotateSide(Cube.Positions.front, true);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.front, true);
+                    break;
+                case 1:
+                    cube.RotateSide(Cube.Positions.back, true);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.back, true);
+                    break;
+                case 2:
+                    cube.RotateSide(Cube.Positions.top, true);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.top, true);
+                    break;
+                case 3:
+                    cube.RotateSide(Cube.Positions.bottom, true);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.bottom, true);
+                    break;
+                case 4:
+                    cube.RotateSide(Cube.Positions.left, true);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.left, true);
+                    break;
+                case 5:
+                    cube.RotateSide(Cube.Positions.right, true);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.right, true);
+                    break;
+                case 6:
+                    cube.RotateSide(Cube.Positions.front, false);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.front, false);
+                    break;
+                case 7:
+                    cube.RotateSide(Cube.Positions.back, false);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.back, false);
+                    break;
+                case 8:
+                    cube.RotateSide(Cube.Positions.top, false);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.top, false);
+                    break;
+                case 9:
+                    cube.RotateSide(Cube.Positions.bottom, false);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.bottom, false);
+                    break;
+                case 10:
+                    cube.RotateSide(Cube.Positions.left, false);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.left, false);
+                    break;
+                case 11:
+                    cube.RotateSide(Cube.Positions.right, false);
+                    moveInfo = new Tuple<Cube, byte, bool>(cube, (byte)Cube.Positions.right, false);
+                    break;
+            }
+
+            return moveInfo;
+        }
+
+        static void Reduced() {
+            Console.WriteLine("Entered Reduced Test Mode");
+
+            List<Tuple<byte[], List<Tuple<byte, bool>>>> Tree = new List<Tuple<byte[], List<Tuple<byte, bool>>>>();
+
+            Cube.Positions[] p = cube.GetPositions();
+            byte[] toTest = new byte[p.Length];
+            for (int i = 0; i < toTest.Length; i++)
+                toTest[i] = (byte)p[i];
+            Tree.Add(new Tuple<byte[], List<Tuple<byte, bool>>>(toTest, new List<Tuple<byte, bool>>()));
+
+            int count = 0;
+            int start = 0;
+            int skipped = 0;
+
+            while (!solved) {
+                start = Tree.Count;
+                skipped = 0;
+                Console.WriteLine("Starting pass {1}. Tree size: {0}",
+                    Tree.Count, count + 1, skipped);
+
+                var sw = Stopwatch.StartNew();
+
+                for (int j = 0; j < start; j++) {
+                    for (int i = 0; i < 12; i++) {
+                        bool include = true;
+                        if (j > Tree.Count || Tree[j] == null)
+                            break;
+
+                        Cube.Positions[] test = new Cube.Positions[Tree[j].Item1.Length];
+                        for (int k = 0; k < test.Length; k++)
+                            test[k] = (Cube.Positions)Tree[j].Item1[k];
+                        cube.SetPositions(test);
+                        Tuple<Cube, byte, bool> move = ApplyMove(cube, i);
+                        cube = move.Item1;
+
+                        if (Tree[j].Item2.Count > 0) {
+                            Tuple<byte, bool> last = Tree[j].Item2[Tree[j].Item2.Count - 1];
+                            if ((last.Item1 ^ move.Item2) == 0) {
+                                if (!(last.Item2 ^ move.Item3)) {
+                                    if (Tree[j].Item2.Count > 1) {
+                                        Tuple<byte, bool> second = Tree[j].Item2[Tree[j].Item2.Count - 2];
+                                        if ((second.Item1 ^ last.Item1) == 0 && !(second.Item2 ^ last.Item2)) {
+                                            if (move.Item3 == false) {
+                                                skipped++;
+                                                include = false;
+                                            } else if (Tree[j].Item2.Count > 2) {
+                                                Tuple<byte, bool> third = Tree[j].Item2[Tree[j].Item2.Count - 2];
+                                                if ((third.Item1 ^ second.Item1) == 0 && !(third.Item2 ^ second.Item2)) {
+                                                    skipped++;
+                                                    include = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    skipped++;
+                                    include = false;
+                                }
+                            }
+                        }
+
+                        int same = 0;
+                        Cube.Positions[] thisPos = cube.GetPositions();
+
+                        for (int k = 0; k < cube.GetPositions().Length; k++) {
+                            if ((thisPos[k] ^ original[k]) == 0)
+                                same++;
+                        }
+
+                        if (same == original.Length) {
+                            sw.Stop();
+                            solved = true;
+                            Console.WriteLine("Found solution! Tree elements: {0}", Tree.Count);
+                            Tree.Clear();
+                            break;
+                        } else if (include) {
+                            Cube.Positions[] positions = cube.GetPositions();
+                            byte[] pos = new byte[positions.Length];
+                            for (int k = 0; k < pos.Length; k++)
+                                pos[k] = (byte)positions[k];
+
+                            Tuple<byte[], List<Tuple<byte, bool>>> item = new Tuple<byte[], List<Tuple<byte, bool>>>(pos,
+                                new List<Tuple<byte, bool>>());
+                            foreach (Tuple<byte, bool> lMove in Tree[j].Item2)
+                                item.Item2.Add(lMove);
+                            item.Item2.Add(new Tuple<byte, bool>(move.Item2, move.Item3));
+                            if (item.Item2.Count > 3) {
+                                item.Item2.Reverse();
+                                item.Item2.RemoveRange(3, item.Item2.Count - 3);
+                            }
+
+                            Tree.Add(item);
+                        }
+                    }
+                }
+                sw.Stop();
+
+                if (!solved) {
+                    var rsw = Stopwatch.StartNew();
+                    Console.Write("Removing old moves... ");
+                    Tree.Reverse();
+                    Tree.RemoveRange((Tree.Count - start), start);
+                    Tree.Reverse();
+                    rsw.Stop();
+                    Console.WriteLine("{0}ms", rsw.ElapsedMilliseconds);
+                }
+
+                Console.WriteLine("Pass {0} finished in {1}ms", count + 1, sw.ElapsedMilliseconds);
+                Console.WriteLine("Test Count x12: {0}. Added: {1}. Skipped {2}", start * 12, Tree.Count, skipped);
+
+                //Console.WriteLine("Standard Duplicate Check. Tree size: {0}", Tree.Count);
+                //int dup = 0;
+                //for (int i = 0; i < Tree.Count; i++) {
+                //    for (int j = 0; j < Tree.Count; j++) {
+                //        if (i != j) {
+                //            int same = 0;
+                //            for (int k = 0; k < Tree[i].Item1.Length; k++) {
+                //                if (Tree[i].Item1.SequenceEqual(Tree[j].Item1))
+                //                    same++;
+                //            }
+
+                //            if (same == Tree[i].Item1.Length)
+                //                dup++;
+                //        }
+                //    }
+                //}
+                //Console.WriteLine("Done. Found: {0}", dup);
+
+                count++;
+            }
         }
 
         /// <summary>
@@ -1514,7 +1706,7 @@ namespace CubeSolver {
 
         static void Main(string[] args) {
             cube = new Cube();
-            random = new Random();
+            RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
 
             //Console.WriteLine("Heuristic: {0}", Heuristic(cube.GetPositions()));
 
@@ -1618,11 +1810,14 @@ namespace CubeSolver {
             //Console.WriteLine(o24.SequenceEqual(o));
 
             // Randomise the first moves of the cube
+
+            byte[] moves = new byte[20];
+            random.GetBytes(moves);
+
             do {
-                for (int i = 0; i < 5; i++) {
-                    int num = random.Next(12);
-                    MoveCubeSide(num, cube);
-                }
+                foreach (byte move in moves)
+                    MoveCubeSide(move % 12, cube);
+                random.GetBytes(moves);
             } while (cube.IsSolved());
 
             //Console.WriteLine();
@@ -1644,7 +1839,7 @@ namespace CubeSolver {
             //Seq();
             //    }
             //} else if (mode.Equals("Smart")) {
-            Smart();
+            //Smart();
             //} else if (mode.Equals("Tree")) {
             //    Tree();
             //} else if (mode.Equals("Manual")) { // Manual solving mode. User solves the cube manually, controlling it by input the side to rotate and clockwise or not
@@ -1654,6 +1849,7 @@ namespace CubeSolver {
             //}
             //SmartWithHelp();
             //Threaded();
+            Reduced();
 
             Console.WriteLine("Cube Solved!!!");
             Console.WriteLine("Press any key to exit");

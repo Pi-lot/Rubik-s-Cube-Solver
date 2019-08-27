@@ -2,7 +2,7 @@
 #include "Piece.h"
 #include "Cube.h"
 
-class Centre : Piece {
+class Centre /*: public Piece */{
 public:
 	Centre(Cube::Colours);
 	~Centre();
