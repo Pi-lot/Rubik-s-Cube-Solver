@@ -7,7 +7,7 @@ Centre::Centre(Centre::COLOURS Colour) {
 	positions = new Centre::POSITIONS[SIZE];
 	switch (Colour) {
 	case Piece::green:
-		positions[0] = Piece::front;
+		positions[0] = Piece::top;
 		break;
 	case Piece::blue:
 		positions[0] = Piece::bottom;
