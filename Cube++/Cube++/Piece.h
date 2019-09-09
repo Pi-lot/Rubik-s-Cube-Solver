@@ -21,6 +21,7 @@ protected:
 	COLOURS *colours;
 private:
 	bool InSide(POSITIONS side);
+	void SideHelper(int index, bool clockwise, Piece::POSITIONS s[], int ss);
 	struct CONNECTED {
 		POSITIONS connected[4];
 	} TOP, BOTTOM, RIGHT, LEFT, FRONT, BACK;
