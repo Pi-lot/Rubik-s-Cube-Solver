@@ -152,17 +152,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Centre.cpp" />
-    <ClCompile Include="Corner.cpp" />
     <ClCompile Include="Cube++.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="Edge.cpp" />
     <ClCompile Include="Piece.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Centre.h" />
-    <ClInclude Include="Corner.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="Edge.h" />
     <ClInclude Include="Piece.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

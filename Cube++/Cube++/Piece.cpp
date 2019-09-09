@@ -1,28 +1,22 @@
 #include "Piece.h"
 
-
-void Piece::RotateAroundSide(Cube::Positions side, bool clockwise) {
+Piece::~Piece() {
+	delete[] positions;
+	delete[] colours;
 }
 
-bool Piece::InSide(Cube::Positions side) {
-	return false;
+void Piece::MoveSide(POSITIONS side, bool clockwise) {
+
 }
 
-Cube::PieceTypes Piece::GetPieceType() {
-	return Cube::PieceTypes();
+int Piece::GetSize() {
+	return SIZE;
 }
 
-Cube::Colours Piece::GetColours() {
-	return Cube::Colours();
+Piece::POSITIONS *Piece::GetPositions() {
+	return positions;
 }
 
-Cube::Positions Piece::GetPositions() {
-	return Cube::Positions();
-}
-
-void Piece::SetPositions(Cube(Positions[])) {
-}
-
-std::string Piece::GetColourString(Cube::Positions pos) {
-	return std::string();
+Piece::COLOURS *Piece::GetColours() {
+	return colours;
 }

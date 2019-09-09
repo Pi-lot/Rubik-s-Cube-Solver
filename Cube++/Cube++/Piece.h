@@ -1,17 +1,20 @@
 #pragma once
-#include <string>
-#include "Cube.h"
+#include <array>
+
+using namespace std;
 
 class Piece {
-protected: Cube::Positions positions;
-		   Cube::PieceTypes pieceType;
-		   Cube::Colours colours;
 public:
-	void RotateAroundSide(Cube::Positions side, bool clockwise);
-	bool InSide(Cube::Positions side);
-	Cube::PieceTypes GetPieceType();
-	Cube::Colours GetColours();
-	Cube::Positions GetPositions();
-	void SetPositions(Cube(Positions[]));
-	std::string GetColourString(Cube::Positions pos);
+	const enum POSITIONS { top, bottom, left, right, front, back };
+	const enum COLOURS { green, blue, yellow, white, red, orange };
+	~Piece();
+	void MoveSide(POSITIONS side, bool clockwise);
+	int GetSize();
+	POSITIONS *GetPositions();
+	COLOURS *GetColours();
+protected:
+	int SIZE;
+	POSITIONS *positions;
+	COLOURS *colours;
 };
+

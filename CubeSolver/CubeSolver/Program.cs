@@ -1672,6 +1672,144 @@ namespace CubeSolver {
             }
         }
 
+        static void ReducedLarge() {
+            Console.WriteLine("Entered Reduced Test Mode");
+
+            List<List<Tuple<byte[], List<Tuple<byte, bool>>>>> Tree = new List<List<Tuple<byte[], List<Tuple<byte, bool>>>>>();
+            Tree.Add(new List<Tuple<byte[], List<Tuple<byte, bool>>>>());
+
+            Cube.Positions[] p = cube.GetPositions();
+            byte[] toTest = new byte[p.Length];
+            for (int i = 0; i < toTest.Length; i++)
+                toTest[i] = (byte)p[i];
+            Tree[0].Add(new Tuple<byte[], List<Tuple<byte, bool>>>(toTest, new List<Tuple<byte, bool>>()));
+
+            int count = 0;
+            ulong start = 0;
+            int skipped = 0;
+            int treeIndex = 0;
+
+            while (!solved) {
+                start = 0;
+                foreach (List<Tuple<byte[], List<Tuple<byte, bool>>>> sTree in Tree)
+                    start += (ulong)sTree.Count();
+                skipped = 0;
+                Console.WriteLine("Starting pass {1}. Tree size: {0}",
+                    start, count + 1, skipped);
+
+                var sw = Stopwatch.StartNew();
+
+                int treeCheck = 0;
+
+                for (ulong j = 0; j < start; j++) {
+                    if (j >= int.MaxValue)
+                        treeCheck = (int)(j / int.MaxValue);
+                    for (int i = 0; i < 12; i++) {
+                        bool include = true;
+                            int jindex = (int)(j % int.MaxValue);
+                        if ((int)(j % int.MaxValue) > Tree[treeIndex].Count || Tree[treeCheck][jindex] == null)
+                            break;
+
+                        Cube.Positions[] test = new Cube.Positions[Tree[treeCheck][jindex].Item1.Length];
+                        for (int k = 0; k < test.Length; k++)
+                            test[k] = (Cube.Positions)Tree[treeCheck][jindex].Item1[k];
+                        cube.SetPositions(test);
+                        Tuple<Cube, byte, bool> move = ApplyMove(cube, i);
+                        cube = move.Item1;
+
+                        if (Tree[treeCheck][jindex].Item2.Count > 0) {
+                            Tuple<byte, bool> last = Tree[treeCheck][jindex].Item2[Tree[treeCheck][jindex].Item2.Count - 1];
+                            if ((last.Item1 ^ move.Item2) == 0) {
+                                if (!(last.Item2 ^ move.Item3)) {
+                                    if (Tree[treeCheck][jindex].Item2.Count > 1) {
+                                        Tuple<byte, bool> second = Tree[treeCheck][jindex].Item2[Tree[treeCheck][jindex].Item2.Count - 2];
+                                        if ((second.Item1 ^ last.Item1) == 0 && !(second.Item2 ^ last.Item2)) {
+                                            if (move.Item3 == false) {
+                                                skipped++;
+                                                include = false;
+                                            } else if (Tree[treeCheck][jindex].Item2.Count > 2) {
+                                                Tuple<byte, bool> third = Tree[treeCheck][jindex].Item2[Tree[treeCheck][jindex].Item2.Count - 2];
+                                                if ((third.Item1 ^ second.Item1) == 0 && !(third.Item2 ^ second.Item2)) {
+                                                    skipped++;
+                                                    include = false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    skipped++;
+                                    include = false;
+                                }
+                            }
+                        }
+
+                        int same = 0;
+                        Cube.Positions[] thisPos = cube.GetPositions();
+
+                        for (int k = 0; k < cube.GetPositions().Length; k++) {
+                            if ((thisPos[k] ^ original[k]) == 0)
+                                same++;
+                        }
+
+                        if (same == original.Length) {
+                            sw.Stop();
+                            solved = true;
+                            Console.WriteLine("Found solution! Tree elements: {0}", Tree.Count);
+                            Tree.Clear();
+                            break;
+                        } else if (include) {
+                            Cube.Positions[] positions = cube.GetPositions();
+                            byte[] pos = new byte[positions.Length];
+                            for (int k = 0; k < pos.Length; k++)
+                                pos[k] = (byte)positions[k];
+
+                            Tuple<byte[], List<Tuple<byte, bool>>> item = new Tuple<byte[], List<Tuple<byte, bool>>>(pos,
+                                new List<Tuple<byte, bool>>());
+                            foreach (Tuple<byte, bool> lMove in Tree[treeCheck][jindex].Item2)
+                                item.Item2.Add(lMove);
+                            item.Item2.Add(new Tuple<byte, bool>(move.Item2, move.Item3));
+                            if (item.Item2.Count > 3) {
+                                item.Item2.Reverse();
+                                item.Item2.RemoveRange(3, item.Item2.Count - 3);
+                            }
+
+                            try {
+                                Tree[treeIndex].Add(item);
+                            } catch (OutOfMemoryException outOfMem) {
+                                Console.WriteLine(outOfMem.Message);
+                                Console.WriteLine("Creating new subtree");
+                                treeIndex++;
+                                Tree.Add(new List<Tuple<byte[], List<Tuple<byte, bool>>>>());
+                                Tree[treeIndex].Add(item);
+                            }
+                        }
+                    }
+                }
+                sw.Stop();
+
+                if (!solved) {
+                    var rsw = Stopwatch.StartNew();
+                    Console.Write("Removing old moves... ");
+                    long leaves = 0;
+                    foreach (List<Tuple<byte[], List<Tuple<byte, bool>>>> stree in Tree)
+                        leaves += stree.Count();
+
+                    if (Tree.Count == 1) {
+                        Tree[0].Reverse();
+                        Tree[0].RemoveRange((Tree[0].Count - (int)start), (int)start);
+                        Tree[0].Reverse();
+                    }
+                    rsw.Stop();
+                    Console.WriteLine("{0}ms", rsw.ElapsedMilliseconds);
+                }
+
+                Console.WriteLine("Pass {0} finished in {1}ms", count + 1, sw.ElapsedMilliseconds);
+                Console.WriteLine("Test Count x12: {0}. Added: {1}. Skipped {2}", start * 12, Tree.Count, skipped);
+
+                count++;
+            }
+        }
+
         /// <summary>
         /// Moves a side of a cube determined by a number instead of Cube.Positions
         /// </summary>
@@ -1850,6 +1988,7 @@ namespace CubeSolver {
             //SmartWithHelp();
             //Threaded();
             Reduced();
+            //ReducedLarge();
 
             Console.WriteLine("Cube Solved!!!");
             Console.WriteLine("Press any key to exit");

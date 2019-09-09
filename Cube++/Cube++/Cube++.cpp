@@ -2,17 +2,18 @@
 //
 
 #include <iostream>
-#include "Cube.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
+#include "Centre.h"
+#include "Piece.h"
 
 using namespace std;
 
 int main() {
-	cout << "Hello World!\n";
-	Cube cube;
-	cout << cube.IsSolved();
+	cout << "Hello World!" << endl;
+	Centre centre(Piece::green);
+	cout << centre.GetPositions()[0] << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
