@@ -14,7 +14,6 @@ int main() {
 	cout << "Hello World!" << endl;
 	Centre centre(Piece::green);
 	cout << *centre.GetPositions() << endl;
-	cout << ((5) % 4) << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
