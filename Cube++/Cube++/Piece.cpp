@@ -14,6 +14,10 @@ Piece::~Piece() {
 	delete[] colours;
 }
 
+Piece::POSITIONS test(Piece::POSITIONS s[]) {
+
+}
+
 void Piece::MoveSide(POSITIONS side, bool clockwise) {
 	if (pieceType != centre)
 		for (int i = 0; i < SIZE; i++)
