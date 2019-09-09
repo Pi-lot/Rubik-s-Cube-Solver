@@ -1,28 +1,29 @@
 #include "Centre.h"
 
 Centre::Centre(Centre::COLOURS Colour) {
+	pieceType = centre;
 	SIZE = 1;
-	colours = new Centre::COLOURS[SIZE];
-	colours[0] = Colour;
-	positions = new Centre::POSITIONS[SIZE];
+	colours = new Centre::COLOURS;
+	*colours = Colour;
+	positions = new Centre::POSITIONS;
 	switch (Colour) {
 	case Piece::green:
-		positions[0] = Piece::top;
+		*positions = Piece::top;
 		break;
 	case Piece::blue:
-		positions[0] = Piece::bottom;
+		*positions = Piece::bottom;
 		break;
 	case Piece::yellow:
-		positions[0] = Piece::front;
+		*positions = Piece::front;
 		break;
 	case Piece::white:
-		positions[0] = Piece::back;
+		*positions = Piece::back;
 		break;
 	case Piece::red:
-		positions[0] = Piece::right;
+		*positions = Piece::right;
 		break;
 	case Piece::orange:
-		positions[0] = Piece::left;
+		*positions = Piece::left;
 		break;
 	default:
 		break;
