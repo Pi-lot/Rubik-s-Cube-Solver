@@ -1,19 +1,26 @@
 #pragma once
 #include <array>
+#include <iostream>
 
 using namespace std;
 
 class Piece {
 public:
-	const enum POSITIONS { top, bottom, left, right, front, back };
-	const enum COLOURS { green, blue, yellow, white, red, orange };
+	const enum POSITIONS : int { top, bottom, left, right, front, back };
+	const enum COLOURS : int { green, blue, orange, red, yellow, white };
 	const enum TYPE { centre, edge, corner };
 	Piece();
+	Piece(Piece::TYPE type, Piece::COLOURS *colours);
 	~Piece();
 	void MoveSide(POSITIONS side, bool clockwise);
 	int GetSize();
 	POSITIONS *GetPositions();
+	void SetPositions(POSITIONS *position);
 	COLOURS *GetColours();
+	struct CONNECTED {
+		POSITIONS connected[4];
+	} TOP, BOTTOM, RIGHT, LEFT, FRONT, BACK;
+	char *ToChar();
 protected:
 	TYPE pieceType;
 	int SIZE;
@@ -22,8 +29,4 @@ protected:
 private:
 	bool InSide(POSITIONS side);
 	void SideHelper(int index, bool clockwise, Piece::POSITIONS s[], int ss);
-	struct CONNECTED {
-		POSITIONS connected[4];
-	} TOP, BOTTOM, RIGHT, LEFT, FRONT, BACK;
 };
-

@@ -1445,6 +1445,7 @@ namespace CubeSolver {
                     } while (!key.ToLower().Equals("y") && !key.ToLower().Equals("n"));
 
                     cube.RotateSide(position, clockwise);
+                    Console.Clear();
 
                     PrintCube(cube);
                 }
@@ -1981,13 +1982,13 @@ namespace CubeSolver {
             //} else if (mode.Equals("Tree")) {
             //    Tree();
             //} else if (mode.Equals("Manual")) { // Manual solving mode. User solves the cube manually, controlling it by input the side to rotate and clockwise or not
-            //    Manual();
+            Manual();
             //} else { // Random solving mode. Just makes random moves on the cube till it's solved, printing milestones as it goes (every 100,000th move).
             //    Random();
             //}
             //SmartWithHelp();
             //Threaded();
-            Reduced();
+            //Reduced();
             //ReducedLarge();
 
             Console.WriteLine("Cube Solved!!!");

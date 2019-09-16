@@ -5,15 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
-#include "Centre.h"
-#include "Piece.h"
+#include "Cube.h"
 
 using namespace std;
 
 int main() {
 	cout << "Hello World!" << endl;
-	Centre centre(Piece::green);
-	cout << *centre.GetPositions() << endl;
+	Cube cube;
+	cout << cube.IsSolved() << endl;
+	cube.RotateSide(Piece::front, true);
+	cout << cube.IsSolved() << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

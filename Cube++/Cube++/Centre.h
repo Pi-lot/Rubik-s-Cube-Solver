@@ -3,6 +3,7 @@
 class Centre :
 	public Piece {
 public:
-	Centre(COLOURS Colour);
+	Centre();
+	Centre(COLOURS colour);
 };
 
