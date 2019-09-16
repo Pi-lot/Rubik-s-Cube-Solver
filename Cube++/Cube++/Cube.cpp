@@ -42,47 +42,60 @@ Cube::Cube() {
 	c[0] = Piece::white;
 	c[1] = Piece::red;
 	pieces[17] = Piece(Piece::edge, c);
-	delete c;
+	delete[] c;
 	Piece::COLOURS *ct = new Piece::COLOURS[3];
 	ct[0] = Piece::green;
 	ct[1] = Piece::yellow;
 	ct[2] = Piece::red;
-	pieces[18] = Piece(Piece::edge, c);
+	pieces[18] = Piece(Piece::corner, ct);
 	ct[0] = Piece::green;
 	ct[1] = Piece::yellow;
 	ct[2] = Piece::orange;
-	pieces[19] = Piece(Piece::edge, c);
+	pieces[19] = Piece(Piece::corner, ct);
 	ct[0] = Piece::green;
 	ct[1] = Piece::white;
 	ct[2] = Piece::red;
-	pieces[20] = Piece(Piece::edge, c);
+	pieces[20] = Piece(Piece::corner, ct);
 	ct[0] = Piece::green;
 	ct[1] = Piece::white;
 	ct[2] = Piece::orange;
-	pieces[21] = Piece(Piece::edge, c);
+	pieces[21] = Piece(Piece::corner, ct);
 	ct[0] = Piece::blue;
 	ct[1] = Piece::yellow;
 	ct[2] = Piece::orange;
-	pieces[22] = Piece(Piece::edge, c);
+	pieces[22] = Piece(Piece::corner, ct);
 	ct[0] = Piece::blue;
 	ct[1] = Piece::yellow;
 	ct[2] = Piece::red;
-	pieces[23] = Piece(Piece::edge, c);
+	pieces[23] = Piece(Piece::corner, ct);
 	ct[0] = Piece::blue;
 	ct[1] = Piece::white;
 	ct[2] = Piece::red;
-	pieces[24] = Piece(Piece::edge, c);
+	pieces[24] = Piece(Piece::corner, ct);
 	ct[0] = Piece::blue;
 	ct[1] = Piece::white;
 	ct[2] = Piece::orange;
-	pieces[25] = Piece(Piece::edge, c);
-	delete[] c;
+	pieces[25] = Piece(Piece::corner, ct);
+	delete[] ct;
 	solved = new Piece::POSITIONS[54];
-	for (int i = 0; i < 54; i++) {
-		solved[i] = GetPositions()[i];
-		//cout << solved[i] << ",";
+	cout << "--------------------------" << endl;
+	for (int i = 0; i < no; i++) {
+		Piece::POSITIONS *pos = pieces[i].GetPositions();
+		for (int j = 0; j < pieces[i].GetSize(); j++)
+			cout << pos[j] << ",";
+		cout << endl;
+		delete[] pos;
 	}
 	cout << endl;
+	//cout << "--------------------------" << endl;
+	//Piece::POSITIONS *positions = GetPositions();
+	//copy(positions, positions + 54, solved);
+	//for (int i = 0; i < 54; i++) {
+	//	cout << positions[i] << ",";
+	//}
+	//cout << endl;
+	//cout << "--------------------------" << endl;
+	//delete[] positions;
 }
 
 Cube::~Cube() {
@@ -117,22 +130,34 @@ bool Cube::IsSolved() {
 	int same = 0;
 	Piece::POSITIONS *pos = GetPositions();
 	for (int i = 0; i < 54; i++) {
-		cout << pos[i] << "|" << solved[i] << ",";
+		//cout << pos[i] << "|" << solved[i] << ",";
 		if (pos[i] == solved[i])
 			same++;
 	}
-	cout << endl;
+	delete[] pos;
+	//cout << endl;
 	return (same == 54);
 }
 
 Piece::POSITIONS *Cube::GetPositions() {
 	Piece::POSITIONS *positions = new Piece::POSITIONS[54];
 	int index = 0;
+	cout << "--------------------------" << endl;
+	//Piece::POSITIONS *positions = GetPositions();
+	//copy(positions, positions + 54, solved);
+	//for (int i = 0; i < 54; i++) {
+		//cout << positions[i] << ",";
+	//}
 	for (int i = 0; i < no; i++) {
+		Piece::POSITIONS *pos = new Piece::POSITIONS[pieces->GetSize()];
+		copy(pieces[i].GetPositions(), pieces[i].GetPositions() + pieces[i].GetSize(), pos);
 		for (int j = 0; j < pieces[i].GetSize(); j++) {
-			positions[index] = pieces[i].GetPositions()[j];
+			positions[index] = pos[j];
+			cout << positions[index] << ",";
 		}
+		cout << endl;
 	}
+	cout << "--------------------------" << endl;
 	return positions;
 }
 

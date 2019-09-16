@@ -36,10 +36,32 @@ Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
 		break;
 	}
 
+	copy(colour, colour + SIZE, colours);
 	for (int i = 0; i < SIZE; i++) {
-		colours[i] = colour[i];
-		cout << colour[i] << ",";
+		switch (colours[i]) {
+		case green:
+			cout << "Green,";
+			break;
+		case blue:
+			cout << "Blue,";
+			break;
+		case yellow:
+			cout << "Yellow,";
+			break;
+		case white:
+			cout << "White,";
+			break;
+		case red:
+			cout << "Red,";
+			break;
+		case orange:
+			cout << "Orange,";
+			break;
+		}
+		//colours[i] = colour[i];
+		//cout << colours[i] << ",";
 	}
+	cout << " - " << type;
 	cout << endl;
 }
 
@@ -117,6 +139,10 @@ void Piece::SetPositions(POSITIONS *position) {
 
 Piece::COLOURS *Piece::GetColours() {
 	return colours;
+}
+
+char *Piece::ToChar() {
+	return nullptr;
 }
 
 bool Piece::InSide(POSITIONS side) {

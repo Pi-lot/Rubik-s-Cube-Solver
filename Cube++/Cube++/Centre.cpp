@@ -35,4 +35,27 @@ Centre::Centre(COLOURS colour) {
 			*positions = Piece::left;
 			break;
 		}
+
+		switch (colour) {
+		case green:
+			cout << "Green,";
+			break;
+		case blue:
+			cout << "Blue,";
+			break;
+		case yellow:
+			cout << "Yellow,";
+			break;
+		case white:
+			cout << "White,";
+			break;
+		case red:
+			cout << "Red,";
+			break;
+		case orange:
+			cout << "Orange,";
+			break;
+		}
+		cout << " - C";
+		cout << endl;
 }
