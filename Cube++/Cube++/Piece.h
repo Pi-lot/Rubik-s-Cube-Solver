@@ -6,9 +6,9 @@ using namespace std;
 
 class Piece {
 public:
-	const enum POSITIONS : int { top, bottom, left, right, front, back };
-	const enum COLOURS : int { green, blue, orange, red, yellow, white };
-	const enum TYPE { centre, edge, corner };
+	const enum POSITIONS : char { top = 'g', bottom = 'b', left = 'o', right = 'r', front = 'y', back = 'w' };
+	const enum COLOURS : char { green = 'g', blue = 'b', orange = 'o', red = 'r', yellow = 'y', white = 'w' };
+	const enum TYPE : char { centre, edge, corner };
 	Piece();
 	Piece(Piece::TYPE type, Piece::COLOURS *colours);
 	~Piece();

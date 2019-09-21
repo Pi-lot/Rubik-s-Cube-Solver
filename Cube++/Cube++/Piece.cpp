@@ -38,31 +38,8 @@ Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
 
 	copy(colour, colour + SIZE, colours);
 	for (int i = 0; i < SIZE; i++) {
-		switch (colours[i]) {
-		case green:
-			cout << "Green,";
-			break;
-		case blue:
-			cout << "Blue,";
-			break;
-		case yellow:
-			cout << "Yellow,";
-			break;
-		case white:
-			cout << "White,";
-			break;
-		case red:
-			cout << "Red,";
-			break;
-		case orange:
-			cout << "Orange,";
-			break;
-		}
-		//colours[i] = colour[i];
-		//cout << colours[i] << ",";
+		positions[i] = (POSITIONS)colours[i];
 	}
-	cout << " - " << type;
-	cout << endl;
 }
 
 Piece::~Piece() {
@@ -73,14 +50,15 @@ Piece::~Piece() {
 void Piece::SideHelper(int index, bool clockwise, Piece::POSITIONS s[], int ss) {
 	for (int j = 0; j < ss; j++)
 		if (positions[index] == s[j]) {
-			if (clockwise)
-				positions[index] = s[(j++) % ss];
+			if (!clockwise)
+				positions[index] = s[(j + 1) % ss];
 			else {
-				if (j-- > 0)
-					positions[index] = s[(j--) % ss];
+				if ((j - 1) > 0)
+					positions[index] = s[(j - 1) % ss];
 				else
-					positions[index] = s[(j--) % ss + ss];
+					positions[index] = s[(j - 1) % ss + ss];
 			}
+			break;
 		}
 }
 

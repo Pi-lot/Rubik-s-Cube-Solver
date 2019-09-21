@@ -10,29 +10,17 @@
 using namespace std;
 
 int main() {
-	int *test = new int[3];
-	test[0] = 3;
-	test[2] = 10;
-	test[1] = 1;
-	int *T = new int[3];
-	copy(test, test + 3, T);
-	T[0]++;
-	T[1]++;
-	T[2]++;
-	for (int i = 0; i < 3; i++) {
-		cout << test[i] << "|";
-	}
-	cout << endl;
-	for (int i = 0; i < 3; i++) {
-		cout << T[i] << "|";
-	}
-	cout << endl;
-	delete[] test, T;
 	cout << "Hello World!" << endl;
 	Cube cube;
 	cout << true << endl;
 	cout << cube.IsSolved() << endl;
 	cube.RotateSide(Piece::front, true);
+	cout << cube.IsSolved() << endl;
+	cube.RotateSide(Piece::front, false);
+	cout << cube.IsSolved() << endl;
+	cube.RotateSide(Piece::left, true);
+	cout << cube.IsSolved() << endl;
+	cube.RotateSide(Piece::left, false);
 	cout << cube.IsSolved() << endl;
 }
 

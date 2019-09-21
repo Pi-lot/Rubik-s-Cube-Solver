@@ -2,8 +2,9 @@
 
 Cube::Cube() {
 	pieces = new Piece[no];
+	char chars[]{ 'g', 'b', 'o', 'r', 'g', 'w' };
 	for (int i = 0; i < 6; i++) {
-		pieces[i] = Centre(Piece::COLOURS(i));
+		pieces[i] = Centre(Piece::COLOURS(chars[i]));
 	}
 	Piece::COLOURS *c = new Piece::COLOURS[2];
 	c[0] = Piece::green;
@@ -78,24 +79,6 @@ Cube::Cube() {
 	pieces[25] = Piece(Piece::corner, ct);
 	delete[] ct;
 	solved = new Piece::POSITIONS[54];
-	cout << "--------------------------" << endl;
-	for (int i = 0; i < no; i++) {
-		Piece::POSITIONS *pos = pieces[i].GetPositions();
-		for (int j = 0; j < pieces[i].GetSize(); j++)
-			cout << pos[j] << ",";
-		cout << endl;
-		delete[] pos;
-	}
-	cout << endl;
-	//cout << "--------------------------" << endl;
-	//Piece::POSITIONS *positions = GetPositions();
-	//copy(positions, positions + 54, solved);
-	//for (int i = 0; i < 54; i++) {
-	//	cout << positions[i] << ",";
-	//}
-	//cout << endl;
-	//cout << "--------------------------" << endl;
-	//delete[] positions;
 }
 
 Cube::~Cube() {
@@ -127,21 +110,19 @@ void Cube::SetPositions(Piece::POSITIONS *positions) {
 }
 
 bool Cube::IsSolved() {
-	int same = 0;
-	Piece::POSITIONS *pos = GetPositions();
-	for (int i = 0; i < 54; i++) {
-		//cout << pos[i] << "|" << solved[i] << ",";
-		if (pos[i] == solved[i])
-			same++;
-	}
-	delete[] pos;
-	//cout << endl;
-	return (same == 54);
+	bool solved = true;
+	for (int i = 0; i < no; i++)
+		for (int j = 0; j < pieces[i].GetSize(); j++)
+			if (pieces[i].GetPositions()[j] != pieces[i].GetColours()[j])
+				solved = false;
+	return solved;
 }
 
 Piece::POSITIONS *Cube::GetPositions() {
 	Piece::POSITIONS *positions = new Piece::POSITIONS[54];
 	int index = 0;
+	cout << "--------------------------" << endl;
+	cout << "GetPositions" << endl;
 	cout << "--------------------------" << endl;
 	//Piece::POSITIONS *positions = GetPositions();
 	//copy(positions, positions + 54, solved);
@@ -153,7 +134,7 @@ Piece::POSITIONS *Cube::GetPositions() {
 		copy(pieces[i].GetPositions(), pieces[i].GetPositions() + pieces[i].GetSize(), pos);
 		for (int j = 0; j < pieces[i].GetSize(); j++) {
 			positions[index] = pos[j];
-			cout << positions[index] << ",";
+			cout << "|" << positions[index] << "|";
 		}
 		cout << endl;
 	}
