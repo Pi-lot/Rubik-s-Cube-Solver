@@ -2,7 +2,7 @@
 
 Cube::Cube() {
 	pieces = new Piece[no];
-	char chars[]{ 'g', 'b', 'o', 'r', 'g', 'w' };
+	char chars[]{ 'g', 'b', 'o', 'r', 'y', 'w' };
 	for (int i = 0; i < 6; i++) {
 		pieces[i] = Centre(Piece::COLOURS(chars[i]));
 	}
@@ -78,7 +78,6 @@ Cube::Cube() {
 	ct[2] = Piece::orange;
 	pieces[25] = Piece(Piece::corner, ct);
 	delete[] ct;
-	solved = new Piece::POSITIONS[54];
 }
 
 Cube::~Cube() {
@@ -118,8 +117,22 @@ bool Cube::IsSolved() {
 	return solved;
 }
 
+void Cube::PrintColours() {
+	for (int i = 0; i < no; i++)
+		for (int j = 0; j < pieces[i].GetSize(); j++)
+			cout << pieces[i].GetColours()[j];
+	cout << endl;
+}
+
+void Cube::PrintPositions() {
+	for (int i = 0; i < no; i++)
+		for (int j = 0; j < pieces[i].GetSize(); j++)
+			cout << pieces[i].GetPositions()[j];
+	cout << endl;
+}
+
 Piece::POSITIONS *Cube::GetPositions() {
-	Piece::POSITIONS *positions = new Piece::POSITIONS[54];
+	Piece::POSITIONS *positions = new Piece::POSITIONS[NOPOSITIONS];
 	int index = 0;
 	for (int i = 0; i < no; i++) {
 		for (int j = 0; j < pieces[i].GetSize(); j++) {
@@ -131,6 +144,59 @@ Piece::POSITIONS *Cube::GetPositions() {
 
 string Cube::CubeString() {
 	string cubeString;
-
+	char *toUse = new char[NOPOSITIONS] {};
+	int index = 0;
+	for (int i = 0; i < no; i++) {
+		for (int j = 0; j < pieces[i].GetSize(); j++) {
+			toUse[index] = pieces[i].GetPositions()[j];
+			index++;
+		}
+	}
+	char piecesChar[NOPOSITIONS]{};
+	//cout << "|";
+	for (int i = 4; i < NOPOSITIONS; i += 9) {
+		piecesChar[i] = NULL;
+		index = 0;
+		for (int j = 0; j < no; j++) {
+			if (pieces[j].GetType() == Piece::centre && toUse[index] != NULL) {
+				piecesChar[i] = toUse[index];
+				toUse[index] = NULL;
+				break;
+			}
+			index += pieces[j].GetSize();
+		}
+	}
+	//for (int i = 0; i < NOPOSITIONS; i++)
+	//	cout << piecesChar[i] << "," << i << "|";
+	//cout << endl;
+	//cout << endl;
+	//cout << endl;
+	//cout << "|";
+	for (int i = 0; i < NOPOSITIONS; i++) {
+		if (i % 9 == 4)
+			continue;
+		index = 0;
+		for (int j = 6; j < no; j++) {
+			//if (((i % 9) == 0 || (i % 9) == 2 || (i % 9) == 6 || (i % 9) == 8) && pieces[j].GetType() == Piece::corner) {
+				for (int k = 0; k < pieces[j].GetSize(); k++) {
+					int centre;
+					if (i % 9 < 4)
+						centre = i + (4 - (i % 9));
+					else
+						centre = i - ((i % 9) - 4);
+					if (toUse[index + k] == piecesChar[centre]) {
+						piecesChar[i] = toUse[index + k];
+						toUse[index] = NULL;
+					}
+				}
+			//}
+			index += pieces[j].GetSize();
+		}
+	}
+	for (int i = 0; i < NOPOSITIONS; i++)
+		cubeString += piecesChar[i];
+	//	cout << piecesChar[i] << "," << i << "|";
+	//cout << endl;
+	delete[] toUse;
 	return cubeString;
 }

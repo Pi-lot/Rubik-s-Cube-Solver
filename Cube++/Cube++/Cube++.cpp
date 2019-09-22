@@ -13,6 +13,15 @@ using namespace std;
 int main() {
 	cout << "Hello World!" << endl;
 	Cube cube;
+	cout << cube.CubeString() << endl;
+	cube.PrintColours();
+	cube.PrintPositions();
+	cout << endl << "----------------------------------" << endl;
+	cube.RotateSide(Piece::top, true);
+	cube.PrintColours();
+	cube.PrintPositions();
+	cout << cube.IsSolved() << endl << true << endl;
+	cout << cube.CubeString();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

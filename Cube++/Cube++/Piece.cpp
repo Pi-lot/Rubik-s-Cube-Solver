@@ -2,7 +2,7 @@
 
 Piece::Piece() {
 	TOP = { back, right, front, left };
-	BOTTOM = { back, left, front, right };
+	BOTTOM = { front, right, back, left };
 	FRONT = { top, right, bottom, left };
 	BACK = { top, left, bottom, right };
 	LEFT = { top, front, bottom, back };
@@ -11,7 +11,7 @@ Piece::Piece() {
 
 Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
 	TOP = { back, right, front, left };
-	BOTTOM = { back, left, front, right };
+	BOTTOM = { front, right, back, left };
 	FRONT = { top, right, bottom, left };
 	BACK = { top, left, bottom, right };
 	LEFT = { top, front, bottom, back };
@@ -102,6 +102,10 @@ void Piece::MoveSide(POSITIONS side, bool clockwise) {
 
 int Piece::GetSize() {
 	return SIZE;
+}
+
+Piece::TYPE Piece::GetType() {
+	return pieceType;
 }
 
 Piece::POSITIONS *Piece::GetPositions() {

@@ -14,6 +14,7 @@ public:
 	~Piece();
 	void MoveSide(POSITIONS side, bool clockwise);
 	int GetSize();
+	TYPE GetType();
 	POSITIONS *GetPositions();
 	void SetPositions(POSITIONS *position);
 	COLOURS *GetColours();
