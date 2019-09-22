@@ -6,22 +6,13 @@
 #include <stdlib.h>
 #include <chrono>
 #include "Cube.h"
+#include <vector>
 
 using namespace std;
 
 int main() {
 	cout << "Hello World!" << endl;
 	Cube cube;
-	cout << true << endl;
-	cout << cube.IsSolved() << endl;
-	cube.RotateSide(Piece::front, true);
-	cout << cube.IsSolved() << endl;
-	cube.RotateSide(Piece::front, false);
-	cout << cube.IsSolved() << endl;
-	cube.RotateSide(Piece::left, true);
-	cout << cube.IsSolved() << endl;
-	cube.RotateSide(Piece::left, false);
-	cout << cube.IsSolved() << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

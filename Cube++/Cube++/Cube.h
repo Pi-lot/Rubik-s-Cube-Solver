@@ -1,10 +1,8 @@
 #pragma once
-#include <iostream>
 #include "Piece.h"
 #include "Centre.h"
 
 #define SIZE 3
-#define NOPOSITIONS 54
 
 class Cube {
 private:
@@ -18,7 +16,7 @@ public:
 	void SetPositions(Piece::POSITIONS *positions);
 	bool IsSolved();
 	Piece::POSITIONS *GetPositions();
-	string *CubeString();
+	string CubeString();
 };
 
 

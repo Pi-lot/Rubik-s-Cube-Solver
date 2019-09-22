@@ -121,27 +121,16 @@ bool Cube::IsSolved() {
 Piece::POSITIONS *Cube::GetPositions() {
 	Piece::POSITIONS *positions = new Piece::POSITIONS[54];
 	int index = 0;
-	cout << "--------------------------" << endl;
-	cout << "GetPositions" << endl;
-	cout << "--------------------------" << endl;
-	//Piece::POSITIONS *positions = GetPositions();
-	//copy(positions, positions + 54, solved);
-	//for (int i = 0; i < 54; i++) {
-		//cout << positions[i] << ",";
-	//}
 	for (int i = 0; i < no; i++) {
-		Piece::POSITIONS *pos = new Piece::POSITIONS[pieces->GetSize()];
-		copy(pieces[i].GetPositions(), pieces[i].GetPositions() + pieces[i].GetSize(), pos);
 		for (int j = 0; j < pieces[i].GetSize(); j++) {
-			positions[index] = pos[j];
-			cout << "|" << positions[index] << "|";
+			positions[index] = pieces[i].GetPositions()[j];
 		}
-		cout << endl;
 	}
-	cout << "--------------------------" << endl;
 	return positions;
 }
 
-string *Cube::CubeString() {
-	return nullptr;
+string Cube::CubeString() {
+	string cubeString;
+
+	return cubeString;
 }
