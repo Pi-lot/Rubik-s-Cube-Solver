@@ -19,10 +19,14 @@ int main() {
 	cube.RotateSide(Piece::top, true);
 	cube.RotateSide(Piece::top, false);
 	cout << cube.IsSolved() << endl;
-	//cube.RotateSide(Piece::bottom, true);
-	//cube.RotateSide(Piece::right, true);
-	//cube.RotateSide(Piece::left, true);
-	//cout << cube.IsSolved() << endl << true << endl;
+	cube.RotateSide(Piece::bottom, true);
+	cube.RotateSide(Piece::right, true);
+	cube.RotateSide(Piece::left, true);
+	cout << cube.IsSolved() << endl << true << endl;
+	cout << cube.IsSolved() << endl << true << endl;
+	cube.RotateSide(Piece::left, false);
+	cube.RotateSide(Piece::right, false);
+	cube.RotateSide(Piece::bottom, false);
 	cout << cube.CubeString();
 }
 

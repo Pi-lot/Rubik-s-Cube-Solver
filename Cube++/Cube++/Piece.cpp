@@ -48,19 +48,22 @@ Piece::~Piece() {
 }
 
 void Piece::SideHelper(Piece::POSITIONS side, bool clockwise, Piece::CONNECTED s) {
+	for (int i = 0; i < SIZE; i++) {
 		if (positions[i] != side)
 			for (int j = 0; j < size(s.connected); j++)
 				if (positions[i] == s.connected[j]) {
-					if (!clockwise)
-						positions[i] = s.connected[(j + 1) % size(s.connected)];
-					else {
-						if ((j - 1) > 0)
-							positions[i] = s.connected[(j - 1) % size(s.connected)];
-						else
-							positions[i] = s.connected[(j - 1) % size(s.connected) + size(s.connected)];
-					}
+					int nextIndex = j;
+					if (clockwise)
+						nextIndex++;
+					else
+						nextIndex--;
+					while (nextIndex < 0)
+						nextIndex += size(s.connected);
+					nextIndex %= size(s.connected);
+					positions[i] = s.connected[nextIndex];
 					break;
 				}
+	}
 }
 
 void Piece::MoveSide(POSITIONS side, bool clockwise) {
