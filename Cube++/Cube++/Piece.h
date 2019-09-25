@@ -29,5 +29,5 @@ protected:
 	COLOURS *colours;
 private:
 	bool InSide(POSITIONS side);
-	void SideHelper(int index, bool clockwise, Piece::POSITIONS s[], int ss);
+	void SideHelper(Piece::POSITIONS side, bool clockwise, Piece::CONNECTED s);
 };

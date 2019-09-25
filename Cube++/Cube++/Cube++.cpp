@@ -13,14 +13,16 @@ using namespace std;
 int main() {
 	cout << "Hello World!" << endl;
 	Cube cube;
+	cout << true << endl;
 	cout << cube.CubeString() << endl;
-	cube.PrintColours();
-	cube.PrintPositions();
-	cout << endl << "----------------------------------" << endl;
+	//cout << cube.IsSolved() << endl;
 	cube.RotateSide(Piece::top, true);
-	cube.PrintColours();
-	cube.PrintPositions();
-	cout << cube.IsSolved() << endl << true << endl;
+	cube.RotateSide(Piece::top, false);
+	cout << cube.IsSolved() << endl;
+	//cube.RotateSide(Piece::bottom, true);
+	//cube.RotateSide(Piece::right, true);
+	//cube.RotateSide(Piece::left, true);
+	//cout << cube.IsSolved() << endl << true << endl;
 	cout << cube.CubeString();
 }
 
