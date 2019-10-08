@@ -1,22 +1,9 @@
 #include "Piece.h"
 
 Piece::Piece() {
-	TOP = { back, right, front, left };
-	BOTTOM = { front, right, back, left };
-	FRONT = { top, right, bottom, left };
-	BACK = { top, left, bottom, right };
-	LEFT = { top, front, bottom, back };
-	RIGHT = { top, back, bottom, front };
 }
 
 Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
-	TOP = { back, right, front, left };
-	BOTTOM = { front, right, back, left };
-	FRONT = { top, right, bottom, left };
-	BACK = { top, left, bottom, right };
-	LEFT = { top, front, bottom, back };
-	RIGHT = { top, back, bottom, front };
-
 	pieceType = type;
 	switch (type) {
 	case Piece::edge:
@@ -43,8 +30,6 @@ Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
 }
 
 Piece::~Piece() {
-	//delete[] positions;
-	//delete[] colours;
 }
 
 void Piece::SideHelper(Piece::POSITIONS side, bool clockwise, Piece::CONNECTED s) {

@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <iostream>
 
 using namespace std;
 
@@ -20,7 +19,12 @@ public:
 	COLOURS *GetColours();
 	struct CONNECTED {
 		POSITIONS connected[4];
-	} TOP, BOTTOM, RIGHT, LEFT, FRONT, BACK;
+	} TOP = { back, right, front, left },
+	BOTTOM = { front, right, back, left },
+	FRONT = { top, right, bottom, left },
+	BACK = { top, left, bottom, right },
+	LEFT = { top, front, bottom, back },
+	RIGHT = { top, back, bottom, front };
 	char *ToChar();
 protected:
 	TYPE pieceType;

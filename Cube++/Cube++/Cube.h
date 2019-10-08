@@ -3,14 +3,13 @@
 #include "Centre.h"
 #include <iostream>
 
-#define SIZE 3
-#define NOPOSITIONS 54
-
 class Cube {
 private:
 	Piece *pieces;
 	int no = (SIZE * SIZE * SIZE) - ((SIZE - 2) * (SIZE - 2) * (SIZE - 2));
 public:
+	static const int SIZE = 3;
+	static const int NOPOSITIONS = 54;
 	Cube();
 	~Cube();
 	void RotateSide(Piece::POSITIONS side, bool clockwise);

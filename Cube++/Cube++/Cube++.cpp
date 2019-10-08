@@ -10,11 +10,43 @@
 
 using namespace std;
 
+string CubePrint(Cube c) {
+	cout << "Print Cube Start -------------------" << endl;
+	string base = c.CubeString();
+	cout << "Base: " << base << endl;
+	cout << base.length() << endl;
+	if (base.length() == 0)
+		return NULL;
+	string sides[6] { "", "" ,"" ,"" ,"", "" };
+	for (int i = 0; i < base.length(); i++) {
+		sides[(int)(i / 9)] += base[i];
+	}
+	string seperator = "+-+-+-+";
+	base = "";
+	cout << size(sides) << endl;
+	for (int i = 0; i < size(sides); i++)
+		cout << sides[i] << endl;
+	for (int i = 0; i < size(sides); i++) {
+		string temp = seperator + "|";
+		const char *s = sides[i].c_str();
+		cout << temp << endl;
+		for (int j = 0; j < sides[i].length(); j++) {
+			cout << sides[i][j] << endl;
+			temp += s[j] + "|";
+			if (j % c.SIZE == 0 && j != 0)
+				temp += seperator + "|";
+		}
+		base += temp;
+	}
+	cout << "Print Cube End ---------------------" << endl;
+	return base;
+}
+
 int main() {
 	cout << "Hello World!" << endl;
 	Cube cube;
 	cout << true << endl;
-	cout << cube.CubeString() << endl;
+	cout << CubePrint(cube) << endl;
 	//cout << cube.IsSolved() << endl;
 	cube.RotateSide(Piece::top, true);
 	cube.RotateSide(Piece::top, false);
@@ -27,7 +59,10 @@ int main() {
 	cube.RotateSide(Piece::left, false);
 	cube.RotateSide(Piece::right, false);
 	cube.RotateSide(Piece::bottom, false);
-	cout << cube.CubeString();
+	cout << "a" << endl;
+	cout << CubePrint(cube) << endl;
+	cube.RotateSide(Piece::bottom, true);
+	cout << "a" << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
