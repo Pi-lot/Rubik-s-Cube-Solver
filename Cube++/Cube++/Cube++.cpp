@@ -13,30 +13,29 @@ using namespace std;
 string CubePrint(Cube c) {
 	cout << "Print Cube Start -------------------" << endl;
 	string base = c.CubeString();
-	cout << "Base: " << base << endl;
-	cout << base.length() << endl;
-	if (base.length() == 0)
-		return NULL;
+	if (base.length() != 54) {
+		cout << "Too Small" << endl;
+	}
 	string sides[6] { "", "" ,"" ,"" ,"", "" };
 	for (int i = 0; i < base.length(); i++) {
 		sides[(int)(i / 9)] += base[i];
 	}
 	string seperator = "+-+-+-+";
 	base = "";
-	cout << size(sides) << endl;
-	for (int i = 0; i < size(sides); i++)
-		cout << sides[i] << endl;
 	for (int i = 0; i < size(sides); i++) {
-		string temp = seperator + "|";
+		string temp = seperator + '|';
 		const char *s = sides[i].c_str();
-		cout << temp << endl;
+		//cout << temp;
 		for (int j = 0; j < sides[i].length(); j++) {
-			cout << sides[i][j] << endl;
-			temp += s[j] + "|";
-			if (j % c.SIZE == 0 && j != 0)
-				temp += seperator + "|";
+			//cout << sides[i][j];
+			temp += s[j];
+			temp += '|';
+			if (j % c.SIZE == 2)
+				temp += seperator + '|';
 		}
+		temp[temp.length() - 1] = ' ';
 		base += temp;
+		cout << temp << endl;
 	}
 	cout << "Print Cube End ---------------------" << endl;
 	return base;

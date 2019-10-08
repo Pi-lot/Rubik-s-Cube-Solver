@@ -188,5 +188,6 @@ string Cube::CubeString() {
 			}
 		}
 	}
+	cout << t << endl;
 	return t;
 }
