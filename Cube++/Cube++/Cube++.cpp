@@ -12,7 +12,11 @@ using namespace std;
 
 string CubePrint(Cube c) {
 	cout << "Print Cube Start -------------------" << endl;
-	string base = c.CubeString();
+	char *chars = c.CubeString();
+	string base = "";
+	for (int i = 0; i < c.NOPOSITIONS; i++)
+		base += chars[i];
+	//delete[] chars;
 	if (base.length() != 54) {
 		cout << "Too Small" << endl;
 	}

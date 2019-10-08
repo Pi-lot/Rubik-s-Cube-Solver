@@ -142,52 +142,148 @@ Piece::POSITIONS *Cube::GetPositions() {
 	return positions;
 }
 
-string Cube::CubeString() {
-	string cubeString;
-	string t;
-	char toUse[NOPOSITIONS] {};
-	char piecesChar[NOPOSITIONS] {};
-	for (int i = 0; i < NOPOSITIONS; i++) {
-		piecesChar[i] = NULL;
-		toUse[i] = NULL;
-	}
-	int index = 0;
+int Cube::GetIndexEdge(Piece::POSITIONS pos, Piece::CONNECTED side, int centre) {
+	for (int z = 0; z < size(side.connected); z++)
+		if (side.connected[z] == pos)
+			switch (z) {
+			case 0:
+				return centre - 3;
+			case 1:
+				return centre - 1;
+			case 2:
+				return centre + 1;
+			case 3:
+				return centre + 3;
+			}
+}
+
+int Cube::GetIndexCorner(Piece piece, Piece::CONNECTED side, int centre) {
+	return 0;// -------------------------------------------------------------------HERE
+}
+
+char *Cube::CubeString() {
+	char colour[NOPOSITIONS] {};
+	char position[NOPOSITIONS] {};
 	for (int i = 0; i < no; i++) {
-		for (int j = 0; j < pieces[i].GetSize(); j++) {
-			toUse[index] = pieces[i].GetColours()[j];
-			index++;
-		}
-	}
-	for (int i = 0; i < NOPOSITIONS; i++) {
-		if (i % 9 == 4) {
-			index = 0;
-			for (int j = 0; j < no; j++) {
-				if (pieces[j].GetType() == Piece::centre && toUse[index] != NULL) {
-					piecesChar[i] = toUse[index];
-					t += toUse[index];
-					toUse[index] = NULL;
+		if (pieces[i].GetType() == Piece::centre) {
+			for (int j = 4; j < NOPOSITIONS; j += 9)
+				if (colour[j] == NULL) {
+					colour[j] = pieces[i].GetColours()[0];
+					position[j] = pieces[i].GetPositions()[0];
 					break;
 				}
-				index += pieces[j].GetSize();
-			}
-			continue;
-		}
-		index = 6;
-		for (int j = 6; j < no; j++) {
-			for (int k = 0; k < pieces[j].GetSize(); k++) {
-				int centre;
-				if (i % 9 < 4)
-					centre = i + (4 - (i % 9));
-				else
-					centre = i - ((i % 9) - 4);
-				if (pieces[j].GetPositions()[k] == piecesChar[centre] && toUse[index] != NULL) {
-					t += toUse[index];
-					toUse[index] = NULL;
+		} else if (pieces[i].GetType() == Piece::edge) {
+			for (int j = 4; j < NOPOSITIONS; j += 9) {
+				for (int k = 0; k < pieces[i].GetSize(); k++) {
+					if (pieces[i].GetPositions()[k] == position[j]) {
+						int index;
+						switch (pieces[i].GetPositions()[k]) {
+						case Piece::top:
+							if (k == 0)
+								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].TOP, j);
+							else
+								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].TOP, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							break;
+						case Piece::bottom:
+							if (k == 0)
+								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].BOTTOM, j);
+							else
+								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].BOTTOM, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							break;
+						case Piece::left:
+							if (k == 0)
+								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].LEFT, j);
+							else
+								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].LEFT, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							break;
+						case Piece::right:
+							if (k == 0)
+								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].RIGHT, j);
+							else
+								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].RIGHT, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							break;
+						case Piece::front:
+							if (k == 0)
+								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].FRONT, j);
+							else
+								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].FRONT, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							break;
+						case Piece::back:
+							if (k == 0)
+								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].BACK, j);
+							else
+								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].BACK, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							break;
+						}
+						break;
+					}
 				}
-				index++;
+			}
+		} else if (pieces[i].GetType() == Piece::corner) {
+			for (int j = 4; j < NOPOSITIONS; j += 9) {
+				for (int k = 0; k < pieces[i].GetSize(); k++) {
+					//cout << pieces[i].GetPositions()[k]<< i << "," << position[j] << " " << j << " ";
+					if (pieces[i].GetPositions()[k] == position[j]) {
+						//cout << "True ";
+						int index;
+						switch (pieces[i].GetPositions()[k]) {
+						case Piece::top:
+							index = GetIndexCorner(pieces[i], pieces[i].TOP, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							//cout << index << "|" << position << "|" << j << " ";
+							break;
+						case Piece::bottom:
+							index = GetIndexCorner(pieces[i], pieces[i].BOTTOM, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							//cout << index << "|" << position << "|" << j << " ";
+							break;
+						case Piece::left:
+							index = GetIndexCorner(pieces[i], pieces[i].LEFT, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							//cout << index << "|" << position << "|" << j << " ";
+							break;
+						case Piece::right:
+							index = GetIndexCorner(pieces[i], pieces[i].RIGHT, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							//cout << index << "|" << position << "|" << j << " ";
+							break;
+						case Piece::front:
+							index = GetIndexCorner(pieces[i], pieces[i].FRONT, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							//cout << index << "|" << position << "|" << j << " ";
+							break;
+						case Piece::back:
+							index = GetIndexCorner(pieces[i], pieces[i].BACK, j);
+							position[index] = pieces[i].GetPositions()[k];
+							colour[index] = pieces[i].GetColours()[k];
+							//cout << index << "|" << position << "|" << j << " ";
+							break;
+						}
+						break;
+					}
+				}
 			}
 		}
 	}
-	cout << t << endl;
-	return t;
+	for (int i = 0; i < NOPOSITIONS; i++)
+		cout << colour[i];
+	cout << endl;
+	return colour;
 }
