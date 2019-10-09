@@ -16,10 +16,13 @@ string CubePrint(Cube c) {
 	string base = "";
 	for (int i = 0; i < c.NOPOSITIONS; i++)
 		base += chars[i];
-	//delete[] chars;
-	if (base.length() != 54) {
-		cout << "Too Small" << endl;
-	}
+	delete[] chars;
+	chars = NULL;
+	cout << "Base:                " << base << endl;
+	cout << "PrintPositions:      ";
+	c.PrintPositions();
+	cout << "PrintColours:        ";
+	c.PrintColours();
 	string sides[6] { "", "" ,"" ,"" ,"", "" };
 	for (int i = 0; i < base.length(); i++) {
 		sides[(int)(i / 9)] += base[i];
@@ -37,11 +40,12 @@ string CubePrint(Cube c) {
 			if (j % c.SIZE == 2)
 				temp += seperator + '|';
 		}
+		s = NULL;
 		temp[temp.length() - 1] = ' ';
 		base += temp;
 		cout << temp << endl;
 	}
-	cout << "Print Cube End ---------------------" << endl;
+	cout << "New Base:" << base << endl << "Print Cube End ---------------------" << endl << flush;
 	return base;
 }
 
@@ -49,9 +53,16 @@ int main() {
 	cout << "Hello World!" << endl;
 	Cube cube;
 	cout << true << endl;
-	cout << CubePrint(cube) << endl;
-	//cout << cube.IsSolved() << endl;
+	cout << "Start print" << endl;
+	string printCube = CubePrint(cube);
+	cout << printCube << endl;
+	cout << "Print done ------------------------------------------------------------------------------" << endl;
+	cout << cube.IsSolved() << endl;
 	cube.RotateSide(Piece::top, true);
+	cout << "One move print" << endl;
+	//printCube = CubePrint(cube);
+	cout << printCube << endl;
+	cout << "Print done ------------------------------------------------------------------------------" << endl;
 	cube.RotateSide(Piece::top, false);
 	cout << cube.IsSolved() << endl;
 	cube.RotateSide(Piece::bottom, true);
@@ -62,10 +73,15 @@ int main() {
 	cube.RotateSide(Piece::left, false);
 	cube.RotateSide(Piece::right, false);
 	cube.RotateSide(Piece::bottom, false);
-	cout << "a" << endl;
-	cout << CubePrint(cube) << endl;
+	cout << "Post 6 move print" << endl;
+	//printCube = CubePrint(cube);
+	cout << printCube << endl;
+	cout << "Print done ------------------------------------------------------------------------------" << endl;
 	cube.RotateSide(Piece::bottom, true);
-	cout << "a" << endl;
+	cout << "Final print" << endl;
+	//printCube = CubePrint(cube);
+	cout << printCube << endl;
+	cout << "Print done ------------------------------------------------------------------------------" << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

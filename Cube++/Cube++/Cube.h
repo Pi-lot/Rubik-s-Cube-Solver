@@ -9,7 +9,7 @@ private:
 	Piece *pieces;
 	int no = (SIZE * SIZE * SIZE) - ((SIZE - 2) * (SIZE - 2) * (SIZE - 2));
 	int GetIndexEdge(Piece::POSITIONS pos, Piece::CONNECTED side, int centre);
-	int GetIndexCorner(Piece piece, Piece::CONNECTED side, int centre);
+	int GetIndexCorner(Piece piece, Piece::POSITIONS pos, Piece::CONNECTED side, int centre);
 public:
 	static const int SIZE = 3;
 	static const int NOPOSITIONS = 54;

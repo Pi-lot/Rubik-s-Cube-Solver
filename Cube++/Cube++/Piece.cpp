@@ -89,9 +89,7 @@ Piece::POSITIONS *Piece::GetPositions() {
 }
 
 void Piece::SetPositions(POSITIONS *position) {
-	for (int i = 0; i < SIZE; i++) {
-		positions[i] = position[i];
-	}
+	copy(position, position + SIZE, positions);
 	delete[] position;
 }
 

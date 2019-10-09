@@ -157,12 +157,43 @@ int Cube::GetIndexEdge(Piece::POSITIONS pos, Piece::CONNECTED side, int centre) 
 			}
 }
 
-int Cube::GetIndexCorner(Piece piece, Piece::CONNECTED side, int centre) {
-	return 0;// -------------------------------------------------------------------HERE
+int Cube::GetIndexCorner(Piece piece, Piece::POSITIONS pos, Piece::CONNECTED side, int centre) {
+	int s = piece.GetSize();
+	Piece::POSITIONS *others = new Piece::POSITIONS[s - 1] {};
+	int index = 0;
+	for (int i = 0; i < piece.GetSize(); i++)
+		if (piece.GetPositions()[i] != pos) {
+			others[index] = piece.GetPositions()[i];
+			index++;
+		}
+	for (int i = 0; i < size(side.connected); i++) {
+		for (int j = 0; j < s; j++) {
+			if (others[j] == side.connected[i] && (others[(j + 1) % 2] == side.connected[(i + 1) % size(side.connected)])) {
+				switch (i) {
+				case 0:
+					delete[] others;
+					return centre - 2;
+					break;
+				case 1:
+					delete[] others;
+					return centre + 4;
+					break;
+				case 2:
+					delete[] others;
+					return centre + 2;
+					break;
+				case 3:
+					delete[] others;
+					return centre - 4;
+					break;
+				}
+			}
+		}
+	}
 }
 
 char *Cube::CubeString() {
-	char colour[NOPOSITIONS] {};
+	char *colour = new char[NOPOSITIONS] {};
 	char position[NOPOSITIONS] {};
 	for (int i = 0; i < no; i++) {
 		if (pieces[i].GetType() == Piece::centre) {
@@ -173,8 +204,8 @@ char *Cube::CubeString() {
 					break;
 				}
 		} else if (pieces[i].GetType() == Piece::edge) {
-			for (int j = 4; j < NOPOSITIONS; j += 9) {
-				for (int k = 0; k < pieces[i].GetSize(); k++) {
+			for (int j = 4; j < NOPOSITIONS; j += 9)
+				for (int k = 0; k < pieces[i].GetSize(); k++)
 					if (pieces[i].GetPositions()[k] == position[j]) {
 						int index;
 						switch (pieces[i].GetPositions()[k]) {
@@ -229,8 +260,6 @@ char *Cube::CubeString() {
 						}
 						break;
 					}
-				}
-			}
 		} else if (pieces[i].GetType() == Piece::corner) {
 			for (int j = 4; j < NOPOSITIONS; j += 9) {
 				for (int k = 0; k < pieces[i].GetSize(); k++) {
@@ -240,48 +269,50 @@ char *Cube::CubeString() {
 						int index;
 						switch (pieces[i].GetPositions()[k]) {
 						case Piece::top:
-							index = GetIndexCorner(pieces[i], pieces[i].TOP, j);
+							index = GetIndexCorner(pieces[i], pieces[i].GetPositions()[k], pieces[i].TOP, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
-							//cout << index << "|" << position << "|" << j << " ";
+							//cout << index << "|" << position[index] << "|" << j << " ";
 							break;
 						case Piece::bottom:
-							index = GetIndexCorner(pieces[i], pieces[i].BOTTOM, j);
+							index = GetIndexCorner(pieces[i], pieces[i].GetPositions()[k], pieces[i].BOTTOM, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
-							//cout << index << "|" << position << "|" << j << " ";
+							//cout << index << "|" << position[index] << "|" << j << " ";
 							break;
 						case Piece::left:
-							index = GetIndexCorner(pieces[i], pieces[i].LEFT, j);
+							index = GetIndexCorner(pieces[i], pieces[i].GetPositions()[k], pieces[i].LEFT, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
-							//cout << index << "|" << position << "|" << j << " ";
+							//cout << index << "|" << position[index] << "|" << j << " ";
 							break;
 						case Piece::right:
-							index = GetIndexCorner(pieces[i], pieces[i].RIGHT, j);
+							index = GetIndexCorner(pieces[i], pieces[i].GetPositions()[k], pieces[i].RIGHT, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
-							//cout << index << "|" << position << "|" << j << " ";
+							//cout << index << "|" << position[index] << "|" << j << " ";
 							break;
 						case Piece::front:
-							index = GetIndexCorner(pieces[i], pieces[i].FRONT, j);
+							index = GetIndexCorner(pieces[i], pieces[i].GetPositions()[k], pieces[i].FRONT, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
-							//cout << index << "|" << position << "|" << j << " ";
+							//cout << index << "|" << position[index] << "|" << j << " ";
 							break;
 						case Piece::back:
-							index = GetIndexCorner(pieces[i], pieces[i].BACK, j);
+							index = GetIndexCorner(pieces[i], pieces[i].GetPositions()[k], pieces[i].BACK, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
-							//cout << index << "|" << position << "|" << j << " ";
+							//cout << index << "|" << position[index] << "|" << j << " ";
 							break;
 						}
 						break;
 					}
+					//cout << endl;
 				}
 			}
 		}
 	}
+	cout << "CubeString returning:";
 	for (int i = 0; i < NOPOSITIONS; i++)
 		cout << colour[i];
 	cout << endl;
