@@ -1,7 +1,7 @@
 #include "Cube.h"
 
 Cube::Cube() {
-	pieces = new Piece[no];
+	pieces = new Piece[no] {};
 	char chars[] { 'g', 'b', 'o', 'r', 'y', 'w' };
 	for (int i = 0; i < 6; i++) {
 		pieces[i] = Centre(Piece::COLOURS(chars[i]));
@@ -81,7 +81,7 @@ Cube::Cube() {
 }
 
 Cube::~Cube() {
-	delete[] pieces;
+	//delete[] pieces;
 }
 
 void Cube::RotateSide(Piece::POSITIONS side, bool clockwise) {
@@ -132,7 +132,7 @@ void Cube::PrintPositions() {
 }
 
 Piece::POSITIONS *Cube::GetPositions() {
-	Piece::POSITIONS *positions = new Piece::POSITIONS[NOPOSITIONS];
+	Piece::POSITIONS *positions = new Piece::POSITIONS[NOPOSITIONS] {};
 	int index = 0;
 	for (int i = 0; i < no; i++) {
 		for (int j = 0; j < pieces[i].GetSize(); j++) {

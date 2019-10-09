@@ -8,18 +8,18 @@ Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
 	switch (type) {
 	case Piece::edge:
 		SIZE = 2;
-		colours = new COLOURS[SIZE];
-		positions = new POSITIONS[SIZE];
+		colours = new COLOURS[SIZE] {};
+		positions = new POSITIONS[SIZE] {};
 		break;
 	case Piece::corner:
 		SIZE = 3;
-		colours = new COLOURS[SIZE];
-		positions = new POSITIONS[SIZE];
+		colours = new COLOURS[SIZE] {};
+		positions = new POSITIONS[SIZE] {};
 		break;
 	default:
 		SIZE = 1;
-		colours = new COLOURS;
-		positions = new POSITIONS;
+		colours = new COLOURS {};
+		positions = new POSITIONS {};
 		break;
 	}
 
@@ -30,6 +30,7 @@ Piece::Piece(Piece::TYPE type, Piece::COLOURS *colour) {
 }
 
 Piece::~Piece() {
+	//delete[] positions, colours;
 }
 
 void Piece::SideHelper(Piece::POSITIONS side, bool clockwise, Piece::CONNECTED s) {
@@ -95,10 +96,6 @@ void Piece::SetPositions(POSITIONS *position) {
 
 Piece::COLOURS *Piece::GetColours() {
 	return colours;
-}
-
-char *Piece::ToChar() {
-	return nullptr;
 }
 
 bool Piece::InSide(POSITIONS side) {

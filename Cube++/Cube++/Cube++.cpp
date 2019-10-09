@@ -12,12 +12,11 @@ using namespace std;
 
 string CubePrint(Cube c) {
 	cout << "Print Cube Start -------------------" << endl;
-	char *chars = c.CubeString();
+	char *cubeString = c.CubeString();
 	string base = "";
 	for (int i = 0; i < c.NOPOSITIONS; i++)
-		base += chars[i];
-	delete[] chars;
-	chars = NULL;
+		base += cubeString[i];
+	delete[] cubeString;
 	cout << "Base:                " << base << endl;
 	cout << "PrintPositions:      ";
 	c.PrintPositions();
@@ -45,7 +44,7 @@ string CubePrint(Cube c) {
 		base += temp;
 		cout << temp << endl;
 	}
-	cout << "New Base:" << base << endl << "Print Cube End ---------------------" << endl << flush;
+	cout << "Print Cube End ---------------------" << endl;
 	return base;
 }
 
@@ -60,7 +59,7 @@ int main() {
 	cout << cube.IsSolved() << endl;
 	cube.RotateSide(Piece::top, true);
 	cout << "One move print" << endl;
-	//printCube = CubePrint(cube);
+	printCube = CubePrint(cube);
 	cout << printCube << endl;
 	cout << "Print done ------------------------------------------------------------------------------" << endl;
 	cube.RotateSide(Piece::top, false);
@@ -74,12 +73,12 @@ int main() {
 	cube.RotateSide(Piece::right, false);
 	cube.RotateSide(Piece::bottom, false);
 	cout << "Post 6 move print" << endl;
-	//printCube = CubePrint(cube);
+	printCube = CubePrint(cube);
 	cout << printCube << endl;
 	cout << "Print done ------------------------------------------------------------------------------" << endl;
 	cube.RotateSide(Piece::bottom, true);
 	cout << "Final print" << endl;
-	//printCube = CubePrint(cube);
+	printCube = CubePrint(cube);
 	cout << printCube << endl;
 	cout << "Print done ------------------------------------------------------------------------------" << endl;
 }

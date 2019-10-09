@@ -25,7 +25,6 @@ public:
 	BACK = { top, left, bottom, right },
 	LEFT = { top, front, bottom, back },
 	RIGHT = { top, back, bottom, front };
-	char *ToChar();
 protected:
 	TYPE pieceType;
 	int SIZE;
