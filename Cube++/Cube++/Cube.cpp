@@ -312,9 +312,5 @@ char *Cube::CubeString() {
 			}
 		}
 	}
-	cout << "CubeString returning:";
-	for (int i = 0; i < NOPOSITIONS; i++)
-		cout << colour[i];
-	cout << endl;
 	return colour;
 }

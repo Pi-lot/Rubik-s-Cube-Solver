@@ -10,77 +10,148 @@
 
 using namespace std;
 
+string FormatSide(string side, bool addSpaces) {
+	string spaces = "       ";
+	string formatted = "";
+	if (addSpaces)
+		formatted = spaces;
+	for (int i = 0; i < side.length(); i++) {
+		if (i > 0 && ((side[i] == '|' && side[i - 1] == '+') || (side[i] == '+' && side[i - 1] == '|'))) {
+			formatted += "\n";
+			if (addSpaces)
+				formatted += spaces;
+		}
+		formatted += side[i];
+	}
+	return formatted;
+}
+
 string CubePrint(Cube c) {
-	cout << "Print Cube Start -------------------" << endl;
 	char *cubeString = c.CubeString();
 	string base = "";
 	for (int i = 0; i < c.NOPOSITIONS; i++)
 		base += cubeString[i];
 	delete[] cubeString;
-	cout << "Base:                " << base << endl;
-	cout << "PrintPositions:      ";
-	c.PrintPositions();
-	cout << "PrintColours:        ";
-	c.PrintColours();
 	string sides[6] { "", "" ,"" ,"" ,"", "" };
-	for (int i = 0; i < base.length(); i++) {
+	for (int i = 0; i < base.length(); i++)
 		sides[(int)(i / 9)] += base[i];
-	}
 	string seperator = "+-+-+-+";
 	base = "";
 	for (int i = 0; i < size(sides); i++) {
 		string temp = seperator + '|';
 		const char *s = sides[i].c_str();
-		//cout << temp;
 		for (int j = 0; j < sides[i].length(); j++) {
-			//cout << sides[i][j];
 			temp += s[j];
 			temp += '|';
 			if (j % c.SIZE == 2)
 				temp += seperator + '|';
 		}
 		s = NULL;
-		temp[temp.length() - 1] = ' ';
-		base += temp;
-		cout << temp << endl;
+		temp[temp.length() - 1] = '\n';
+		sides[i] = temp;
 	}
-	cout << "Print Cube End ---------------------" << endl;
+	for (int i = 0; i < size(sides); i++)
+		if (sides[i][(sides[i].length() / 2) - 1] == Piece::top)
+			base += FormatSide(sides[i], true);
+	// Middle Section -------------------------------------------------------------------------
+	string middle[4] = {};
+	for (int i = 0; i < size(sides); i++)
+		if (sides[i][(sides[i].length() / 2) - 1] == Piece::left)
+			middle[0] = FormatSide(sides[i], false);
+	for (int i = 0; i < size(sides); i++)
+		if (sides[i][(sides[i].length() / 2) - 1] == Piece::front)
+			middle[1] = FormatSide(sides[i], false);
+	for (int i = 0; i < size(sides); i++)
+		if (sides[i][(sides[i].length() / 2) - 1] == Piece::right)
+			middle[2] = FormatSide(sides[i], false);
+	for (int i = 0; i < size(sides); i++)
+		if (sides[i][(sides[i].length() / 2) - 1] == Piece::back)
+			middle[3] = FormatSide(sides[i], false);
+	int start = 0;
+	int end = 0;
+	for (int k = 0; k < 7; k++) {
+		string row = "";
+		int index = start;
+		while (end == start) {
+			index++;
+			if (middle[0][index] == '\n')
+				end = index;
+		}
+		for (int i = 0; i < size(middle); i++) {
+			for (int j = start; j < end; j++) {
+				if (middle[i][j] != '\n')
+					row += middle[i][j];
+			}
+		}
+		start = end;
+		base += row + '\n';
+	}
+	// End Middle -----------------------------------------------------------------------------
+	for (int i = 0; i < size(sides); i++)
+		if (sides[i][(sides[i].length() / 2) - 1] == Piece::bottom)
+			base += FormatSide(sides[i], true);
 	return base;
 }
 
 int main() {
 	cout << "Hello World!" << endl;
 	Cube cube;
-	cout << true << endl;
+	cout << "True: " << true << endl;
 	cout << "Start print" << endl;
 	string printCube = CubePrint(cube);
-	cout << printCube << endl;
-	cout << "Print done ------------------------------------------------------------------------------" << endl;
-	cout << cube.IsSolved() << endl;
-	cube.RotateSide(Piece::top, true);
+	cout << printCube;
+	cout << "Is Solved: " << cube.IsSolved() << endl;
+
+	cube.RotateSide(Piece::bottom, true);
 	cout << "One move print" << endl;
 	printCube = CubePrint(cube);
-	cout << printCube << endl;
-	cout << "Print done ------------------------------------------------------------------------------" << endl;
-	cube.RotateSide(Piece::top, false);
-	cout << cube.IsSolved() << endl;
-	cube.RotateSide(Piece::bottom, true);
-	cube.RotateSide(Piece::right, true);
-	cube.RotateSide(Piece::left, true);
-	cout << cube.IsSolved() << endl << true << endl;
-	cout << cube.IsSolved() << endl << true << endl;
-	cube.RotateSide(Piece::left, false);
-	cube.RotateSide(Piece::right, false);
+	cout << printCube;
+	cout << "Is Solved: " << cube.IsSolved() << endl;
+	cout << "Undo one move" << endl;
 	cube.RotateSide(Piece::bottom, false);
-	cout << "Post 6 move print" << endl;
+	cout << "Is Solved: " << cube.IsSolved() << endl;
 	printCube = CubePrint(cube);
-	cout << printCube << endl;
-	cout << "Print done ------------------------------------------------------------------------------" << endl;
-	cube.RotateSide(Piece::bottom, true);
-	cout << "Final print" << endl;
+	cout << printCube;
+
+	/*cube.RotateSide(Piece::bottom, true);
+	cout << "One move print" << endl;
 	printCube = CubePrint(cube);
-	cout << printCube << endl;
-	cout << "Print done ------------------------------------------------------------------------------" << endl;
+	cout << printCube;
+	cout << "Is Solved: " << cube.IsSolved() << endl;
+	cout << "Undo one move" << endl;
+	cube.RotateSide(Piece::bottom, false);
+	cout << "Is Solved: " << cube.IsSolved() << endl;
+	printCube = CubePrint(cube);
+	cout << printCube;
+
+	cube.RotateSide(Piece::right, true);
+	cout << "One move print" << endl;
+	printCube = CubePrint(cube);
+	cout << printCube;
+	cout << "Is Solved: " << cube.IsSolved() << endl;
+	cout << "Undo one move" << endl;
+	cube.RotateSide(Piece::right, false);
+	cout << "Is Solved: " << cube.IsSolved() << endl;
+	printCube = CubePrint(cube);
+	cout << printCube;
+	cube.RotateSide(Piece::bottom, true);*/
+	//cube.RotateSide(Piece::bottom, true);
+	//cube.RotateSide(Piece::right, true);
+	//cube.RotateSide(Piece::left, true);
+	//cout << cube.IsSolved() << endl << true << endl;
+	//cout << cube.IsSolved() << endl << true << endl;
+	//cube.RotateSide(Piece::left, false);
+	//cube.RotateSide(Piece::right, false);
+	//cube.RotateSide(Piece::bottom, false);
+	//cout << "Post 6 move print" << endl;
+	//printCube = CubePrint(cube);
+	//cout << printCube << endl;
+	//cout << "Print done ------------------------------------------------------------------------------" << endl;
+	//cube.RotateSide(Piece::bottom, true);
+	//cout << "Final print" << endl;
+	//printCube = CubePrint(cube);
+	//cout << printCube << endl;
+	//cout << "Print done ------------------------------------------------------------------------------" << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
