@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <chrono>
+#include <random>
 #include "Cube.h"
 #include <vector>
 
@@ -93,65 +94,115 @@ string CubePrint(Cube c) {
 	return base;
 }
 
+void MoveCubeSide(Cube cube, int move) {
+	switch (move) {
+	case 0:
+		cube.RotateSide(Piece::front, true);
+		break;
+	case 1:
+		cube.RotateSide(Piece::back, true);
+		break;
+	case 2:
+		cube.RotateSide(Piece::top, true);
+		break;
+	case 3:
+		cube.RotateSide(Piece::bottom, true);
+		break;
+	case 4:
+		cube.RotateSide(Piece::left, true);
+		break;
+	case 5:
+		cube.RotateSide(Piece::right, true);
+		break;
+	case 6:
+		cube.RotateSide(Piece::front, false);
+		break;
+	case 7:
+		cube.RotateSide(Piece::back, false);
+		break;
+	case 8:
+		cube.RotateSide(Piece::top, false);
+		break;
+	case 9:
+		cube.RotateSide(Piece::bottom, false);
+		break;
+	case 10:
+		cube.RotateSide(Piece::left, false);
+		break;
+	case 11:
+		cube.RotateSide(Piece::right, false);
+		break;
+	}
+}
+
 int main() {
-	cout << "Hello World!" << endl;
+	cout << "Welcome! (The front side is yellow and back is white)" << endl;
 	Cube cube;
-	cout << "True: " << true << endl;
-	cout << "Start print" << endl;
-	string printCube = CubePrint(cube);
-	cout << printCube;
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-
-	cube.RotateSide(Piece::bottom, true);
-	cout << "One move print" << endl;
-	printCube = CubePrint(cube);
-	cout << printCube;
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-	cout << "Undo one move" << endl;
-	cube.RotateSide(Piece::bottom, false);
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-	printCube = CubePrint(cube);
-	cout << printCube;
-
-	/*cube.RotateSide(Piece::bottom, true);
-	cout << "One move print" << endl;
-	printCube = CubePrint(cube);
-	cout << printCube;
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-	cout << "Undo one move" << endl;
-	cube.RotateSide(Piece::bottom, false);
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-	printCube = CubePrint(cube);
-	cout << printCube;
-
-	cube.RotateSide(Piece::right, true);
-	cout << "One move print" << endl;
-	printCube = CubePrint(cube);
-	cout << printCube;
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-	cout << "Undo one move" << endl;
-	cube.RotateSide(Piece::right, false);
-	cout << "Is Solved: " << cube.IsSolved() << endl;
-	printCube = CubePrint(cube);
-	cout << printCube;
-	cube.RotateSide(Piece::bottom, true);*/
-	//cube.RotateSide(Piece::bottom, true);
-	//cube.RotateSide(Piece::right, true);
-	//cube.RotateSide(Piece::left, true);
-	//cout << cube.IsSolved() << endl << true << endl;
-	//cout << cube.IsSolved() << endl << true << endl;
-	//cube.RotateSide(Piece::left, false);
-	//cube.RotateSide(Piece::right, false);
-	//cube.RotateSide(Piece::bottom, false);
-	//cout << "Post 6 move print" << endl;
-	//printCube = CubePrint(cube);
-	//cout << printCube << endl;
-	//cout << "Print done ------------------------------------------------------------------------------" << endl;
-	//cube.RotateSide(Piece::bottom, true);
-	//cout << "Final print" << endl;
-	//printCube = CubePrint(cube);
-	//cout << printCube << endl;
-	//cout << "Print done ------------------------------------------------------------------------------" << endl;
+	random_device rd;
+	do {
+		for (int i = 0; i < 12; i++)
+			MoveCubeSide(cube, (rd() % 12));
+	} while (cube.IsSolved());
+	cout << "Solve it!" << endl << CubePrint(cube);
+	while (!cube.IsSolved()) {
+		cout << "Which side would you like to move? ";
+		string side;
+		getline(cin, side);
+		string temp;
+		for (int i = 0; i < side.length(); i++)
+			if (side[i] != '\n')
+				temp += tolower(side[i]);
+		side = temp;
+		while (side != "front" && side != "back" && side != "top" &&
+			side != "bottom" && side != "left" && side != "right") {
+			cout << "Please input a correct side. ";
+			getline(cin, side);
+			temp = "";
+			for (int i = 0; i < side.length(); i++)
+				temp += tolower(side[i]);
+			side = temp;
+		}
+		cout << "Rotate Clockwise? (based on sides perspective) y/n? ";
+		char clockwise = tolower(getchar());
+		while (clockwise != 'y' && clockwise != 'n') {
+			cout << "Please input y or n. ";
+			clockwise = tolower(getchar());
+		}
+		if (side == "front") {
+			if (clockwise == 'y')
+				MoveCubeSide(cube, 0);
+			else
+				MoveCubeSide(cube, 6);
+		} else if (side == "back") {
+			if (clockwise == 'y')
+				MoveCubeSide(cube, 1);
+			else
+				MoveCubeSide(cube, 7);
+		} else if (side == "top") {
+			if (clockwise == 'y')
+				MoveCubeSide(cube, 2);
+			else
+				MoveCubeSide(cube, 8);
+		} else if (side == "bottom") {
+			if (clockwise == 'y')
+				MoveCubeSide(cube, 3);
+			else
+				MoveCubeSide(cube, 9);
+		} else if (side == "left") {
+			if (clockwise == 'y')
+				MoveCubeSide(cube, 4);
+			else
+				MoveCubeSide(cube, 10);
+		} else if (side == "right") {
+			if (clockwise == 'y')
+				MoveCubeSide(cube, 5);
+			else
+				MoveCubeSide(cube, 11);
+		}
+		cout << CubePrint(cube);
+	}
+	cout << "You solved the cube! Nice work! (Press enter to exit)";
+	getchar();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
