@@ -149,11 +149,11 @@ int Cube::GetIndexEdge(Piece::POSITIONS pos, Piece::CONNECTED side, int centre) 
 			case 0:
 				return centre - 3;
 			case 1:
-				return centre - 1;
-			case 2:
 				return centre + 1;
-			case 3:
+			case 2:
 				return centre + 3;
+			case 3:
+				return centre - 1;
 			}
 }
 
@@ -210,50 +210,32 @@ char *Cube::CubeString() {
 						int index;
 						switch (pieces[i].GetPositions()[k]) {
 						case Piece::top:
-							if (k == 0)
-								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].TOP, j);
-							else
-								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].TOP, j);
+							index = GetIndexEdge(pieces[i].GetPositions()[(k + 1) % pieces[i].GetSize()], pieces[i].TOP, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
 							break;
 						case Piece::bottom:
-							if (k == 0)
-								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].BOTTOM, j);
-							else
-								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].BOTTOM, j);
+								index = GetIndexEdge(pieces[i].GetPositions()[(k + 1) % pieces[i].GetSize()], pieces[i].BOTTOM, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
 							break;
 						case Piece::left:
-							if (k == 0)
-								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].LEFT, j);
-							else
-								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].LEFT, j);
+								index = GetIndexEdge(pieces[i].GetPositions()[(k + 1) % pieces[i].GetSize()], pieces[i].LEFT, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
 							break;
 						case Piece::right:
-							if (k == 0)
-								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].RIGHT, j);
-							else
-								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].RIGHT, j);
+								index = GetIndexEdge(pieces[i].GetPositions()[(k + 1) % pieces[i].GetSize()], pieces[i].RIGHT, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
 							break;
 						case Piece::front:
-							if (k == 0)
-								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].FRONT, j);
-							else
-								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].FRONT, j);
+								index = GetIndexEdge(pieces[i].GetPositions()[(k + 1) % pieces[i].GetSize()], pieces[i].FRONT, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
 							break;
 						case Piece::back:
-							if (k == 0)
-								index = GetIndexEdge(pieces[i].GetPositions()[k + 1], pieces[i].BACK, j);
-							else
-								index = GetIndexEdge(pieces[i].GetPositions()[k - 1], pieces[i].BACK, j);
+								index = GetIndexEdge(pieces[i].GetPositions()[(k + 1) % pieces[i].GetSize()], pieces[i].BACK, j);
 							position[index] = pieces[i].GetPositions()[k];
 							colour[index] = pieces[i].GetColours()[k];
 							break;
