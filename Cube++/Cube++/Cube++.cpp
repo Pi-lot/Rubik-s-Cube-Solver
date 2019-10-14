@@ -7,6 +7,7 @@
 #include <chrono>
 #include <random>
 #include "Cube.h"
+#include "Solver.h"
 #include <vector>
 
 using namespace std;
@@ -135,18 +136,6 @@ void MoveCubeSide(Cube cube, int move) {
 	}
 }
 
-int FindNextMove(Cube cube) {
-	int centres[6];
-	for (int i = 0; i < size(centres); i++) {
-		centres[i] = (i * 9) + 4;
-		cout << centres[i] << " ";
-	}
-	// Check for a cross
-
-	cout << endl;
-	return 0;
-}
-
 int main() {
 	cout << "Welcome! (The front side is yellow and back is white)" << endl;
 	Cube cube;
@@ -214,7 +203,8 @@ int main() {
 			}
 			cout << CubePrint(cube);
 		} else {
-			int move = FindNextMove(cube);
+			Solver solver(cube);
+			int move = solver.BestMove();
 			switch (move) {
 			case 0:
 				cout << "The next move should be front clockwise";

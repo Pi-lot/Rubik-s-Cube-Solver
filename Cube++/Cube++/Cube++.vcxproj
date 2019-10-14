@@ -155,6 +155,7 @@
     <ClCompile Include="Cube++.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Piece.cpp" />
+    <ClCompile Include="Solver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Centre.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Piece.h">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </ClInclude>
+    <ClInclude Include="Solver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
