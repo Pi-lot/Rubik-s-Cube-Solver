@@ -135,6 +135,18 @@ void MoveCubeSide(Cube cube, int move) {
 	}
 }
 
+int FindNextMove(Cube cube) {
+	int centres[6];
+	for (int i = 0; i < size(centres); i++) {
+		centres[i] = (i * 9) + 4;
+		cout << centres[i] << " ";
+	}
+	// Check for a cross
+
+	cout << endl;
+	return 0;
+}
+
 int main() {
 	cout << "Welcome! (The front side is yellow and back is white)" << endl;
 	Cube cube;
@@ -154,7 +166,7 @@ int main() {
 				temp += tolower(side[i]);
 		side = temp;
 		while (side != "front" && side != "back" && side != "top" &&
-			side != "bottom" && side != "left" && side != "right") {
+			side != "bottom" && side != "left" && side != "right" && side != "help") {
 			cout << "Please input a correct side. ";
 			getline(cin, side);
 			temp = "";
@@ -162,44 +174,87 @@ int main() {
 				temp += tolower(side[i]);
 			side = temp;
 		}
-		cout << "Rotate Clockwise? (based on sides perspective) y/n? ";
-		char clockwise = tolower(getchar());
-		while (clockwise != 'y' && clockwise != 'n') {
-			cout << "Please input y or n. ";
-			clockwise = tolower(getchar());
+		if (side != "help") {
+			cout << "Rotate Clockwise? (based on sides perspective) y/n? ";
+			char clockwise = tolower(getchar());
+			while (clockwise != 'y' && clockwise != 'n') {
+				cout << "Please input y or n. ";
+				clockwise = tolower(getchar());
+			}
+			if (side == "front") {
+				if (clockwise == 'y')
+					MoveCubeSide(cube, 0);
+				else
+					MoveCubeSide(cube, 6);
+			} else if (side == "back") {
+				if (clockwise == 'y')
+					MoveCubeSide(cube, 1);
+				else
+					MoveCubeSide(cube, 7);
+			} else if (side == "top") {
+				if (clockwise == 'y')
+					MoveCubeSide(cube, 2);
+				else
+					MoveCubeSide(cube, 8);
+			} else if (side == "bottom") {
+				if (clockwise == 'y')
+					MoveCubeSide(cube, 3);
+				else
+					MoveCubeSide(cube, 9);
+			} else if (side == "left") {
+				if (clockwise == 'y')
+					MoveCubeSide(cube, 4);
+				else
+					MoveCubeSide(cube, 10);
+			} else if (side == "right") {
+				if (clockwise == 'y')
+					MoveCubeSide(cube, 5);
+				else
+					MoveCubeSide(cube, 11);
+			}
+			cout << CubePrint(cube);
+		} else {
+			int move = FindNextMove(cube);
+			switch (move) {
+			case 0:
+				cout << "The next move should be front clockwise";
+				break;
+			case 1:
+				cout << "The next move should be back clockwise";
+				break;
+			case 2:
+				cout << "The next move should be top clockwise";
+				break;
+			case 3:
+				cout << "The next move should be bottom clockwise";
+				break;
+			case 4:
+				cout << "The next move should be left clockwise";
+				break;
+			case 5:
+				cout << "The next move should be right clockwise";
+				break;
+			case 6:
+				cout << "The next move should be front anti-clockwise";
+				break;
+			case 7:
+				cout << "The next move should be back anti-clockwise";
+				break;
+			case 8:
+				cout << "The next move should be top anti-clockwise";
+				break;
+			case 9:
+				cout << "The next move should be bottom anti-clockwise";
+				break;
+			case 10:
+				cout << "The next move should be left anti-clockwise";
+				break;
+			case 11:
+				cout << "The next move should be right anti-clockwise";
+				break;
+			}
+			cout << endl;
 		}
-		if (side == "front") {
-			if (clockwise == 'y')
-				MoveCubeSide(cube, 0);
-			else
-				MoveCubeSide(cube, 6);
-		} else if (side == "back") {
-			if (clockwise == 'y')
-				MoveCubeSide(cube, 1);
-			else
-				MoveCubeSide(cube, 7);
-		} else if (side == "top") {
-			if (clockwise == 'y')
-				MoveCubeSide(cube, 2);
-			else
-				MoveCubeSide(cube, 8);
-		} else if (side == "bottom") {
-			if (clockwise == 'y')
-				MoveCubeSide(cube, 3);
-			else
-				MoveCubeSide(cube, 9);
-		} else if (side == "left") {
-			if (clockwise == 'y')
-				MoveCubeSide(cube, 4);
-			else
-				MoveCubeSide(cube, 10);
-		} else if (side == "right") {
-			if (clockwise == 'y')
-				MoveCubeSide(cube, 5);
-			else
-				MoveCubeSide(cube, 11);
-		}
-		cout << CubePrint(cube);
 	}
 	cout << "You solved the cube! Nice work! (Press enter to exit)";
 	getchar();
