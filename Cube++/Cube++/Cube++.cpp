@@ -139,6 +139,7 @@ void MoveCubeSide(Cube cube, int move) {
 int main() {
 	cout << "Welcome! (The front side is yellow and back is white)" << endl;
 	Cube cube;
+	Solver solver(cube);
 	random_device rd;
 	do {
 		for (int i = 0; i < 12; i++)
@@ -203,7 +204,6 @@ int main() {
 			}
 			cout << CubePrint(cube);
 		} else {
-			Solver solver(cube);
 			int move = solver.BestMove();
 			switch (move) {
 			case 0:

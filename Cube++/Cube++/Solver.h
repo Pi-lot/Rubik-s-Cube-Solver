@@ -5,10 +5,9 @@
 class Solver {
 private:
 	char crossCentre;
-	int centres[6];
-	int const completeCross = 9;
-	bool first;
-	bool second;
+	int const completeCross = 8;
+	bool first = false;
+	bool second = false;
 	Cube cube;
 public:
 	Solver(Cube cube);

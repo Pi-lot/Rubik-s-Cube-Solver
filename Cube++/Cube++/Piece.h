@@ -25,6 +25,7 @@ public:
 	BACK = { top, left, bottom, right },
 	LEFT = { top, front, bottom, back },
 	RIGHT = { top, back, bottom, front };
+	CONNECTED GetConnectedSide(Piece::POSITIONS side);
 protected:
 	TYPE pieceType;
 	int SIZE;

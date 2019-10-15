@@ -55,26 +55,7 @@ void Piece::SideHelper(Piece::POSITIONS side, bool clockwise, Piece::CONNECTED s
 void Piece::MoveSide(POSITIONS side, bool clockwise) {
 	if (pieceType != centre)
 		if (InSide(side))
-			switch (side) {
-			case top:
-				SideHelper(side, clockwise, TOP);
-				break;
-			case bottom:
-				SideHelper(side, clockwise, BOTTOM);
-				break;
-			case left:
-				SideHelper(side, clockwise, LEFT);
-				break;
-			case right:
-				SideHelper(side, clockwise, RIGHT);
-				break;
-			case front:
-				SideHelper(side, clockwise, FRONT);
-				break;
-			case back:
-				SideHelper(side, clockwise, BACK);
-				break;
-			}
+			SideHelper(side, clockwise, GetConnectedSide(side));
 }
 
 int Piece::GetSize() {
@@ -96,6 +77,29 @@ void Piece::SetPositions(POSITIONS *position) {
 
 Piece::COLOURS *Piece::GetColours() {
 	return colours;
+}
+
+Piece::CONNECTED Piece::GetConnectedSide(Piece::POSITIONS side) {
+	switch (side) {
+	case Piece::top:
+		return TOP;
+		break;
+	case Piece::bottom:
+		return BOTTOM;
+		break;
+	case Piece::left:
+		return LEFT;
+		break;
+	case Piece::right:
+		return RIGHT;
+		break;
+	case Piece::front:
+		return FRONT;
+		break;
+	case Piece::back:
+		return BACK;
+		break;
+	}
 }
 
 bool Piece::InSide(POSITIONS side) {

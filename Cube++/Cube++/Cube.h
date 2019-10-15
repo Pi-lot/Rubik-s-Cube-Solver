@@ -21,6 +21,8 @@ public:
 	void PrintColours();
 	void PrintPositions();
 	Piece::POSITIONS *GetPositions();
+	Piece *GetPieces();
+	int GetNumPieces();
 	char *CubeString();
 };
 
