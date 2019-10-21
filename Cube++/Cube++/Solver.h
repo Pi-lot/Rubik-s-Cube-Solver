@@ -24,10 +24,11 @@ private:
 		vector<Piece> positionCorner;
 		vector<Piece> rotateCorner;
 	};
-	COUNTS GetCounts();
+	COUNTS GetCounts(Piece *pieces, int size);
 public:
 	Solver(Cube cube);
 	void SetCube(Cube cube);
 	int BestMove();
+	vector<int> BestMoves();
 };
 

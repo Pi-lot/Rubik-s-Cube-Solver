@@ -206,48 +206,52 @@ int main() {
 			}
 			cout << CubePrint(cube);
 		} else {
-			int move = solver.BestMove();
-			switch (move) {
-			case 0:
-				cout << "The next move should be front clockwise" << endl;
-				break;
-			case 1:
-				cout << "The next move should be back clockwise" << endl;
-				break;
-			case 2:
-				cout << "The next move should be top clockwise" << endl;
-				break;
-			case 3:
-				cout << "The next move should be bottom clockwise" << endl;
-				break;
-			case 4:
-				cout << "The next move should be left clockwise" << endl;
-				break;
-			case 5:
-				cout << "The next move should be right clockwise" << endl;
-				break;
-			case 6:
-				cout << "The next move should be front anti-clockwise" << endl;
-				break;
-			case 7:
-				cout << "The next move should be back anti-clockwise" << endl;
-				break;
-			case 8:
-				cout << "The next move should be top anti-clockwise" << endl;
-				break;
-			case 9:
-				cout << "The next move should be bottom anti-clockwise" << endl;
-				break;
-			case 10:
-				cout << "The next move should be left anti-clockwise" << endl;
-				break;
-			case 11:
-				cout << "The next move should be right anti-clockwise" << endl;
-				break;
-			case 12:
-				cout << "Undetermined" << endl;
-				break;
+			vector<int> moves = solver.BestMoves();
+			cout << "The next moves should be ";
+			for (int i = 0; i < moves.size(); i++) {
+				switch (moves[i]) {
+				case 0:
+					cout << "front clockwise, ";
+					break;
+				case 1:
+					cout << "back clockwise, ";
+					break;
+				case 2:
+					cout << "top clockwise, ";
+					break;
+				case 3:
+					cout << "bottom clockwise, ";
+					break;
+				case 4:
+					cout << "left clockwise, ";
+					break;
+				case 5:
+					cout << "right clockwise, ";
+					break;
+				case 6:
+					cout << "front anti-clockwise, ";
+					break;
+				case 7:
+					cout << "back anti-clockwise, ";
+					break;
+				case 8:
+					cout << "top anti-clockwise, ";
+					break;
+				case 9:
+					cout << "bottom anti-clockwise, ";
+					break;
+				case 10:
+					cout << "left anti-clockwise, ";
+					break;
+				case 11:
+					cout << "right anti-clockwise, ";
+					break;
+				case 12:
+					cout << "Undetermined";
+					break;
+				}
 			}
+			cout << endl;
 		}
 	}
 	cout << "You solved the cube! Nice work! (Press enter to exit)";
