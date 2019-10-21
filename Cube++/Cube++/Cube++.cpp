@@ -137,7 +137,9 @@ void MoveCubeSide(Cube cube, int move) {
 }
 
 int main() {
-	cout << "Welcome! (The front side is yellow and back is white)" << endl;
+	cout << "Welcome! (The front side is yellow (y) and back is white (w)"
+		<< endl << "                    orange (o) is left and red (r) is right"
+		<< endl << "                    green (g) is top and blue (b) is bottom)" << endl;
 	Cube cube;
 	Solver solver(cube);
 	random_device rd;
@@ -147,7 +149,7 @@ int main() {
 	} while (cube.IsSolved());
 	cout << "Solve it!" << endl << CubePrint(cube);
 	while (!cube.IsSolved()) {
-		cout << "Which side would you like to move? ";
+		cout << "Which side would you like to move (position not colour, e.g. front)? ";
 		string side;
 		getline(cin, side);
 		string temp;
@@ -207,43 +209,45 @@ int main() {
 			int move = solver.BestMove();
 			switch (move) {
 			case 0:
-				cout << "The next move should be front clockwise";
+				cout << "The next move should be front clockwise" << endl;
 				break;
 			case 1:
-				cout << "The next move should be back clockwise";
+				cout << "The next move should be back clockwise" << endl;
 				break;
 			case 2:
-				cout << "The next move should be top clockwise";
+				cout << "The next move should be top clockwise" << endl;
 				break;
 			case 3:
-				cout << "The next move should be bottom clockwise";
+				cout << "The next move should be bottom clockwise" << endl;
 				break;
 			case 4:
-				cout << "The next move should be left clockwise";
+				cout << "The next move should be left clockwise" << endl;
 				break;
 			case 5:
-				cout << "The next move should be right clockwise";
+				cout << "The next move should be right clockwise" << endl;
 				break;
 			case 6:
-				cout << "The next move should be front anti-clockwise";
+				cout << "The next move should be front anti-clockwise" << endl;
 				break;
 			case 7:
-				cout << "The next move should be back anti-clockwise";
+				cout << "The next move should be back anti-clockwise" << endl;
 				break;
 			case 8:
-				cout << "The next move should be top anti-clockwise";
+				cout << "The next move should be top anti-clockwise" << endl;
 				break;
 			case 9:
-				cout << "The next move should be bottom anti-clockwise";
+				cout << "The next move should be bottom anti-clockwise" << endl;
 				break;
 			case 10:
-				cout << "The next move should be left anti-clockwise";
+				cout << "The next move should be left anti-clockwise" << endl;
 				break;
 			case 11:
-				cout << "The next move should be right anti-clockwise";
+				cout << "The next move should be right anti-clockwise" << endl;
+				break;
+			case 12:
+				cout << "Undetermined" << endl;
 				break;
 			}
-			cout << endl;
 		}
 	}
 	cout << "You solved the cube! Nice work! (Press enter to exit)";

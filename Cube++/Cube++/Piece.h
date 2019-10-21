@@ -19,6 +19,8 @@ public:
 	COLOURS *GetColours();
 	struct CONNECTED {
 		POSITIONS connected[4];
+		int GetNum(POSITIONS side);
+		int GetNum(COLOURS side);
 	} TOP = { back, right, front, left },
 	BOTTOM = { front, right, back, left },
 	FRONT = { top, right, bottom, left },

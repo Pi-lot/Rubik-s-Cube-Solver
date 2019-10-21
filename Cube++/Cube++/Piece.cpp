@@ -109,3 +109,15 @@ bool Piece::InSide(POSITIONS side) {
 	}
 	return false;
 }
+
+int Piece::CONNECTED::GetNum(POSITIONS side) {
+	for (int i = 0; i < size(connected); i++)
+		if (side == connected[i])
+			return i;
+}
+
+int Piece::CONNECTED::GetNum(COLOURS side) {
+	for (int i = 0; i < size(connected); i++)
+		if (side == connected[i])
+			return i;
+}
