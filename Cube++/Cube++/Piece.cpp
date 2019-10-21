@@ -114,10 +114,12 @@ int Piece::CONNECTED::GetNum(POSITIONS side) {
 	for (int i = 0; i < size(connected); i++)
 		if (side == connected[i])
 			return i;
+	return -1;
 }
 
 int Piece::CONNECTED::GetNum(COLOURS side) {
 	for (int i = 0; i < size(connected); i++)
 		if (side == connected[i])
 			return i;
+	return -1;
 }
