@@ -6,6 +6,7 @@
 class Solver {
 private:
 	bool first = false;
+	char centre = NULL;
 	bool second = false;
 	Cube cube;
 	bool CheckLayer(int no, char centre);
@@ -31,5 +32,6 @@ public:
 	Solver(Cube cube);
 	void SetCube(Cube cube);
 	vector<int> BestMoves();
+	void ResetCentre();
 };
 
