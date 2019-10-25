@@ -412,8 +412,8 @@ vector<int> Solver::BestMoves() {
 							moveIndex += 2;
 							moveIndex = moveIndex % size(connect.connected);
 							char movement = connect.connected[moveIndex];
-							connect = c.oneEdge[i].GetConnectedSide((Piece::POSITIONS)movement); // -------------------------------------------------------------- Finish here
-
+							connect = c.oneEdge[i].GetConnectedSide((Piece::POSITIONS)movement);
+							move = ParseSide(movement, , , connect);
 						} else {
 							cout << "No solved Pieces in centre, move this piece to solve" << endl;
 							int move = ParseSide(c.oneEdge[i].GetColours()[j], c.oneEdge[i].GetColours()[index], c.oneEdge[i].GetPositions()[index],
