@@ -102,6 +102,18 @@ Piece::CONNECTED Piece::GetConnectedSide(Piece::POSITIONS side) {
 	}
 }
 
+bool Piece::operator==(Piece piece) {
+	if (pieceType != piece.GetType())
+		return false;
+	for (int i = 0; i < SIZE; i++) {
+		if (piece.GetPositions()[i] != positions[i])
+			return false;
+		if (piece.GetColours()[i] != colours[i])
+			return false;
+	}
+	return true;
+}
+
 bool Piece::InSide(POSITIONS side) {
 	for (int i = 0; i < SIZE; i++) {
 		if (positions[i] == side)

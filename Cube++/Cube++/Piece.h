@@ -28,6 +28,7 @@ public:
 	LEFT = { top, front, bottom, back },
 	RIGHT = { top, back, bottom, front };
 	CONNECTED GetConnectedSide(Piece::POSITIONS side);
+	bool operator== (Piece piece);
 protected:
 	TYPE pieceType;
 	int SIZE;
