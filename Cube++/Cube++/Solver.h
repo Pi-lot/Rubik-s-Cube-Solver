@@ -25,7 +25,7 @@ private:
 	};
 	int CheckCross(COUNTS counts, char side);
 	char BestCross(COUNTS counts);
-	COUNTS GetCounts(Piece *pieces, int size);
+	COUNTS GetCounts(Piece *pieces, int SIZE);
 	int ParseSide(char side, char from, char to, Piece::CONNECTED connect);
 	bool HasSolvedPieces(char side, COUNTS counts, Piece::TYPE type);
 public:
