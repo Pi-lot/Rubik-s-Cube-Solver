@@ -33,13 +33,15 @@ Solver::COUNTS Solver::GetCounts(Piece *pieces, int SIZE) {
 					}
 				}
 				Piece::CONNECTED c = pieces[i].GetConnectedSide((Piece::POSITIONS)side);
-				int distance = ((c.GetNum((Piece::COLOURS)notSolved[0]) + size(c.connected)) - c.GetNum((Piece::COLOURS)notSolvedPos[0])) % size(c.connected);
-				if (distance == 1 || distance == 3) {
+				int start = c.GetNum((Piece::COLOURS)notSolvedPos[0]);
+				int end = c.GetNum((Piece::COLOURS)notSolved[0]) + size(c.connected);
+				int distance = (end - start) % size(c.connected);
+				if ((distance == 1 || distance == 3) && !(end == - 1 || start == -1)) {
 					if (pieces[i].GetType() == Piece::edge)
 						counts.oneEdge.push_back(pieces[i]);
 					else
 						counts.oneCorner.push_back(pieces[i]);
-				} else if (distance == 2) {
+				} else if (distance == 2 && !(end == -1 || start == -1)) {
 					if (pieces[i].GetType() == Piece::edge)
 						counts.twoEdge.push_back(pieces[i]);
 					else
@@ -155,6 +157,11 @@ int Solver::ParseSide(char side, char from, char to, Piece::CONNECTED connect) {
 	cout << "Getting connected to find direction... ";
 	int start = connect.GetNum((Piece::COLOURS)from);
 	int end = connect.GetNum((Piece::COLOURS)to);
+	if (start == -1 || end == -1) {
+		cout << endl << "----------------------------------------------------------------------------------------------------------------------" << endl;
+		cout << "--------------------------------- WRONG INPUT. CAN'T MOVE FROM/TO A SPECIFIED SIDE -----------------------------------" << endl;
+		cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
+	}
 	int distance = end - start;
 	cout << "Start: " << start << ". End: " << end << ". Direction: " << distance << endl;
 	if (start == 0 && end == (size(connect.connected) - 1))
@@ -203,7 +210,9 @@ bool Solver::HasSolvedPieces(char side, COUNTS counts, Piece::TYPE type) {
 	vector<Piece> inSide;
 	for (int i = 0; i < cube.GetNumPieces(); i++)
 		if (cube.GetPieces()[i].GetType() == type)
-			inSide.push_back(cube.GetPieces()[i]);
+			for (int j = 0; j < cube.GetPieces()[i].GetSize(); j++)
+				if (cube.GetPieces()[i].GetPositions()[j] == side)
+					inSide.push_back(cube.GetPieces()[i]);
 	switch (type) {
 	case Piece::edge:
 		for (int i = 0; i < counts.solvedEdge.size(); i++)
@@ -314,10 +323,18 @@ vector<int> Solver::BestMoves() {
 	COUNTS c = GetCounts(cube.GetPieces(), cube.GetNumPieces());
 	if (centre == NULL)
 		centre = BestCross(c);
+	if (oppCentre == NULL) {
+		Piece::CONNECTED connect = cube.GetPieces()[0].GetConnectedSide((Piece::POSITIONS)centre);
+		char side = connect.connected[0];
+		connect = cube.GetPieces()[0].GetConnectedSide((Piece::POSITIONS)side);
+		int baseIndex = connect.GetNum((Piece::COLOURS)centre);
+		baseIndex += 2;
+		baseIndex %= size(connect.connected);
+		oppCentre = connect.connected[baseIndex];
+	}
 	cout << "Using Cross Centre: " << centre << endl;
 	if (CheckCross(c, centre) != 20) {
 		cout << "No complete cross. Complete cross... " << endl;
-		bool cont = false;
 		if (c.oneEdge.size() > 0) {
 			cout << c.oneEdge.size() << " edges One move away, checking for ones in best centre... ";
 			for (int i = 0; i < c.oneEdge.size(); i++) {
@@ -372,13 +389,10 @@ vector<int> Solver::BestMoves() {
 						}
 					}
 			}
-			if (moves.size() == 0)
-				cont = true;
 			cout << "Moves: " << moves.size() << endl;
 		}
-		if ((cont && c.twoEdge.size() > 0) || (c.oneEdge.size() == 0 && c.twoEdge.size() > 0)) {
+		if (moves.size() == 0 && c.twoEdge.size() > 0) {
 			cout << "Checking pieces two moves away. Size: " << c.twoEdge.size() << endl;
-			cont = false;
 			for (int i = 0; i < c.twoEdge.size(); i++) {
 				if (moves.size() == 0)
 					for (int j = 0; j < c.twoEdge[i].GetSize(); j++) {
@@ -390,7 +404,7 @@ vector<int> Solver::BestMoves() {
 							cout << ", ";
 							if (c.twoEdge[i].GetColours()[index] == c.twoEdge[i].GetPositions()[index]) {
 								cout << "rotates same side twice. Getting moves..." << endl;
-								Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]);
+								Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
 								int moveIndex = connect.GetNum(c.twoEdge[i].GetColours()[j]);
 								moveIndex++;
 								moveIndex %= size(connect.connected);
@@ -400,30 +414,32 @@ vector<int> Solver::BestMoves() {
 								cout << "Done" << endl;
 							} else {
 								cout << "rotates opposite centre then side it's in. Checking side if it's in contains a solved piece... ";
-								if (HasSolvedPieces(c.twoEdge[i].GetPositions()[j], c, Piece::edge)) { // -------------------- NEEDS FIXING -----------------------------
+								/*if (HasSolvedPieces(c.twoEdge[i].GetPositions()[j], c, Piece::edge)) {
+									cout << "Has solved Pieces (centre's side), getting moves to leave piece solved... ";
+									Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]);
+									int move = ParseSide(c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
+									moves.push_back(move);
+									connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]);
+									move = ParseSide(c.twoEdge[i].GetColours()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
+									moves.push_back(move);
+									move = ParseSide(c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[index], c.twoEdge[i].GetPositions()[index],
+										c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]));
+									moves.push_back(move);
+									cout << "Done" << endl;
+								} else */if (HasSolvedPieces(c.twoEdge[i].GetPositions()[index], c, Piece::edge) || HasSolvedPieces(c.twoEdge[i].GetPositions()[j], c, Piece::edge)) {
 									cout << "Has solved Pieces, getting moves to leave piece solved... ";
-									for (int k = 0; k < c.twoEdge[i].GetSize(); k++)
-										cout << c.twoEdge[i].GetColours()[k];
-									cout << endl;
 									Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
-									int moveIndex = connect.GetNum(c.twoEdge[i].GetColours()[j]);
-									moveIndex++;
-									moveIndex %= size(connect.connected);
-									int move = ParseSide(c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[j], connect.connected[moveIndex], connect);
+									int moveInit = ParseSide(c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
+									moves.push_back((moveInit + 6) % 12);
+									connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)oppCentre);
+									int move = ParseSide(oppCentre, c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
 									moves.push_back(move);
-									connect = c.twoEdge[i].GetConnectedSide(connect.connected[moveIndex]);
-									move = ParseSide(connect.connected[moveIndex], c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
-									moves.push_back(move);
-									char moveChar = connect.connected[moveIndex];
-									move = ParseSide(c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetPositions()[j], moveChar,
-										c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]));
-									moves.push_back(move);
-									c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
-									char moveTo = connect.connected[((connect.GetNum((Piece::COLOURS)moveChar)) + 1) % size(connect.connected)];
-									move = ParseSide(c.twoEdge[i].GetColours()[index], moveChar, moveTo, connect);
+									moves.push_back(moveInit);
+									move = ParseSide(c.twoEdge[i].GetColours()[index], oppCentre, c.twoEdge[i].GetPositions()[index],
+										c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]));
 									moves.push_back(move);
 									moves.push_back(move);
-									cout << "Done" << endl; // ----------------------------------------------------------------------------------------------------------
+									cout << "Done" << endl;
 								} else {
 									cout << "Side doesn't contain solved piece. Getting moves... ";
 									for (int k = 0; k < c.twoEdge[i].GetSize(); k++)
@@ -443,7 +459,7 @@ vector<int> Solver::BestMoves() {
 							cout << "Piece within cross layer ";
 							for (int k = 0; k < c.twoEdge[i].GetSize(); k++)
 								cout << c.twoEdge[i].GetColours()[k];
-							cout << endl << ". Checking whether cross has solved pieces... ";
+							cout << ". Checking whether cross has solved pieces... ";
 							if (HasSolvedPieces(c.twoEdge[i].GetColours()[j], c, Piece::edge)) {
 								cout << "cross has solved pieces. Getting moves that leave these solved..." << endl;
 								Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
@@ -457,9 +473,8 @@ vector<int> Solver::BestMoves() {
 								moveIndex %= size(connect.connected);
 								char movement = connect.connected[moveIndex];
 								connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)movement);
-								int nextIndex = moveIndex + 1;
-								nextIndex %= size(connect.connected);
-								move = ParseSide(movement, c.twoEdge[i].GetPositions()[index], connect.connected[nextIndex], connect);
+								moveIndex = (connect.GetNum(c.twoEdge[i].GetPositions()[index]) + 1) % size(connect.connected);
+								move = ParseSide(movement, c.twoEdge[i].GetPositions()[index], connect.connected[moveIndex], connect);
 								moves.push_back(move);
 								moves.push_back(move);
 								connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]);
@@ -481,12 +496,10 @@ vector<int> Solver::BestMoves() {
 						}
 					}
 			}
-			if (moves.size() == 0)
-				cont = true;
 			cout << "Moves: " << moves.size() << endl;
-		} else if ((cont && c.rotateEdge.size() > 0 || (c.oneEdge.size() == 0 && c.twoEdge.size() == 0 && c.rotateEdge.size() > 0))) {
+		}
+		if (moves.size() == 0 && c.rotateEdge.size() > 0) {
 			cout << "Checking pieces to be rotated... ";
-			cont = false;
 			for (int i = 0; i < c.rotateEdge.size(); i++) {
 				if (moves.size() == 0) {
 					for (int j = 0; j < c.rotateEdge[i].GetSize(); j++) {
@@ -522,29 +535,43 @@ vector<int> Solver::BestMoves() {
 					}
 				}
 			}
-			if (moves.size() == 0)
-				cont = true;
 			cout << "Moves: " << moves.size() << endl;
-		} else if ((cont && c.positionEdge.size() > 0 || (c.oneEdge.size() == 0 && c.twoEdge.size() == 0 && c.rotateEdge.size() == 0 && c.positionEdge.size() > 0))) {
+		}
+		if (moves.size() == 0 && c.positionEdge.size() > 0) {
 			cout << "Checking pieces to be postioned... ";
-			for (int i = 0; i < c.rotateEdge.size(); i++) {
+			for (int i = 0; i < c.positionEdge.size(); i++) {
 				if (moves.size() == 0) {
-					for (int j = 0; j < c.rotateEdge[i].GetSize(); j++) {
-						int index = (j + 1) % c.rotateEdge[i].GetSize();
-						if (c.rotateEdge[i].GetColours()[j] == centre) {
+					for (int j = 0; j < c.positionEdge[i].GetSize(); j++) {
+						int index = (j + 1) % c.positionEdge[i].GetSize();
+						if (c.positionEdge[i].GetColours()[j] == centre) {
 							cout << "Piece related to centre. Getting moves to position piece... ";
-							Piece::CONNECTED connect = c.rotateEdge[i].GetConnectedSide(c.rotateEdge[i].GetPositions()[j]);
-							// -------------------------------------------------- NEEDS COMPLETION ---------------------------------------------------------
+							Piece::CONNECTED connect = c.positionEdge[i].GetConnectedSide(c.positionEdge[i].GetPositions()[j]);
+							cout << endl << "-----------------------------------------------------------------------------------------------------------------------------";
+							cout << "-----------------------------------------------------------------------------------------------------------------------------";
+							cout << "-------------------------------------------------- NEEDS COMPLETION ---------------------------------------------------------";
+							cout << "-----------------------------------------------------------------------------------------------------------------------------";
+							cout << "-----------------------------------------------------------------------------------------------------------------------------";
 							break;
-						}
+						} // Hasn't been triggered yet, so not worried just yet.
 					}
 				}
 			}
 			cout << "Moves: " << moves.size() << endl;
 		}
 	} else {
-		cout << "Cross complete." << endl;
-		moves.push_back(12);
+		cout << "Cross complete. Checking first layer.. ";
+		if (!CheckLayer(0, centre)) {
+			cout << "First layer not solved. Solve first layer... ";
+
+		} else {
+			cout << "First layer solved. Checking if second layer is solved... ";
+			if (!CheckLayer(1, centre)) {
+				cout << " Second layer not solved. Solve second layer... " << endl;
+
+			} else {
+				cout << "Second layer solved. Checking third layer cross state... ";
+			}
+		}
 	}
 	if (moves.size() == 0)
 		moves.push_back(12);

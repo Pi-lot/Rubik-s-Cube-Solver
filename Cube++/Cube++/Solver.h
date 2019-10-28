@@ -7,6 +7,7 @@ class Solver {
 private:
 	bool first = false;
 	char centre = NULL;
+	char oppCentre = NULL;
 	bool second = false;
 	Cube cube;
 	bool CheckLayer(int no, char centre);
