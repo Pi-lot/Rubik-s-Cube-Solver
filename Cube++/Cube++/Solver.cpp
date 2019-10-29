@@ -414,31 +414,28 @@ vector<int> Solver::BestMoves() {
 								cout << "Done" << endl;
 							} else {
 								cout << "rotates opposite centre then side it's in. Checking side if it's in contains a solved piece... ";
-								/*if (HasSolvedPieces(c.twoEdge[i].GetPositions()[j], c, Piece::edge)) {
-									cout << "Has solved Pieces (centre's side), getting moves to leave piece solved... ";
-									Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]);
-									int move = ParseSide(c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
-									moves.push_back(move);
-									connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]);
-									move = ParseSide(c.twoEdge[i].GetColours()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
-									moves.push_back(move);
-									move = ParseSide(c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[index], c.twoEdge[i].GetPositions()[index],
-										c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]));
-									moves.push_back(move);
-									cout << "Done" << endl;
-								} else */if (HasSolvedPieces(c.twoEdge[i].GetPositions()[index], c, Piece::edge) || HasSolvedPieces(c.twoEdge[i].GetPositions()[j], c, Piece::edge)) {
+								if (HasSolvedPieces(c.twoEdge[i].GetPositions()[index], c, Piece::edge) || HasSolvedPieces(c.twoEdge[i].GetPositions()[j], c, Piece::edge)) {
 									cout << "Has solved Pieces, getting moves to leave piece solved... ";
-									Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
-									int moveInit = ParseSide(c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
-									moves.push_back((moveInit + 6) % 12);
-									connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)oppCentre);
-									int move = ParseSide(oppCentre, c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
-									moves.push_back(move);
-									moves.push_back(moveInit);
-									move = ParseSide(c.twoEdge[i].GetColours()[index], oppCentre, c.twoEdge[i].GetPositions()[index],
-										c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]));
-									moves.push_back(move);
-									moves.push_back(move);
+									if (c.twoEdge[i].GetPositions()[index] != centre) {
+										Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
+										int moveInit = ParseSide(c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
+										moves.push_back((moveInit + 6) % 12);
+										connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)oppCentre);
+										int move = ParseSide(oppCentre, c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
+										moves.push_back(move);
+										moves.push_back(moveInit);
+										move = ParseSide(c.twoEdge[i].GetColours()[index], oppCentre, c.twoEdge[i].GetPositions()[index],
+											c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]));
+										moves.push_back(move);
+										moves.push_back(move);
+									} else {
+										int move = ParseSide(c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index],
+											c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]));
+										moves.push_back(move);
+										move = ParseSide(c.twoEdge[i].GetColours()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j],
+											c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]));
+										moves.push_back(move);
+									}
 									cout << "Done" << endl;
 								} else {
 									cout << "Side doesn't contain solved piece. Getting moves... ";
@@ -550,7 +547,7 @@ vector<int> Solver::BestMoves() {
 							cout << "-----------------------------------------------------------------------------------------------------------------------------";
 							cout << "-------------------------------------------------- NEEDS COMPLETION ---------------------------------------------------------";
 							cout << "-----------------------------------------------------------------------------------------------------------------------------";
-							cout << "-----------------------------------------------------------------------------------------------------------------------------";
+							cout << "-----------------------------------------------------------------------------------------------------------------------------" << endl;
 							break;
 						} // Hasn't been triggered yet, so not worried just yet.
 					}
