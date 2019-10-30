@@ -10,7 +10,7 @@ private:
 	char oppCentre = NULL;
 	bool second = false;
 	Cube cube;
-	bool CheckLayer(int no, char centre);
+	bool CheckLayer(int no, char layerCentre);
 	struct COUNTS {
 		vector<Piece> centres;
 		vector<Piece> solvedEdge;

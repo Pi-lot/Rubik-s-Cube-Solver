@@ -253,7 +253,7 @@ vector<int> Solver::PositionCorner(Piece p, char centrePos, char centreCol, char
 		p.GetConnectedSide((Piece::POSITIONS)oppCentre));
 	moves.push_back(last);
 	moves.push_back((move + 6) % 12);
-	cout << " Done" << endl;
+	cout << "Position complete" << endl;
 	return moves;
 }
 
@@ -288,16 +288,23 @@ int Solver::CheckCross(COUNTS counts, char side) {
 	return cross;
 }
 
-bool Solver::CheckLayer(int no, char centre) {
-	cout << "Checking layer: " << no << ", with centre: " << centre << "...";
+bool Solver::CheckLayer(int no, char layerCentre) {
+	cout << "Checking layer: " << no << ", with centre: " << layerCentre << "...";
 	Piece *pieces = cube.GetPieces();
 	int correct = 0;
+	vector<Piece> layer;
 	for (int i = 0; i < cube.GetNumPieces(); i++) {
+		for (int j = 0; j < pieces[i].GetSize(); j++) {
+			if (pieces[i].GetPositions()[j] == layerCentre)
+				layer.push_back(pieces[i]);
+		}
+	}
+	for (int i = 0; i < layer.size(); i++) {
 		int right = 0;
-		for (int j = 0; j < pieces[i].GetSize(); j++)
-			if (pieces[i].GetPositions()[j] == centre && pieces[i].GetPositions()[j] == pieces[i].GetColours()[j])
+		for (int j = 0; j < layer[i].GetSize(); j++)
+			if (layer[i].GetPositions()[j] == layer[i].GetColours()[j])
 				right++;
-		if (right == pieces[i].GetSize())
+		if (right == layer[i].GetSize())
 			correct++;
 	}
 	int completeNo;
@@ -306,8 +313,8 @@ bool Solver::CheckLayer(int no, char centre) {
 	else
 		completeNo = (cube.SIZE * cube.SIZE) - ((cube.SIZE - 2) * (cube.SIZE - 2));
 	bool complete = completeNo == correct;
-	cout << " Done. True = " << true << ". Result: " << complete << ". Total = " << correct << endl;
-	return false;
+	cout << " Done. True = " << true << ". Result: " << complete << ". Total = " << correct << ". ";
+	return complete;
 }
 
 char Solver::BestCross(COUNTS counts) {
@@ -469,11 +476,11 @@ vector<int> Solver::BestMoves() {
 									for (int k = 0; k < c.twoEdge[i].GetSize(); k++)
 										cout << c.twoEdge[i].GetColours()[k];
 									cout << endl;
-									Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[j]);
-									int move = ParseSide(c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
+									Piece::CONNECTED connect = c.twoEdge[i].GetConnectedSide(c.twoEdge[i].GetPositions()[index]);
+									int move = ParseSide(c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
 									moves.push_back(move);
-									connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[index]);
-									move = ParseSide(c.twoEdge[i].GetColours()[index], c.twoEdge[i].GetPositions()[j], c.twoEdge[i].GetColours()[j], connect);
+									connect = c.twoEdge[i].GetConnectedSide((Piece::POSITIONS)c.twoEdge[i].GetColours()[j]);
+									move = ParseSide(c.twoEdge[i].GetColours()[j], c.twoEdge[i].GetPositions()[index], c.twoEdge[i].GetColours()[index], connect);
 									moves.push_back(move);
 								}
 								cout << "Done" << endl;
@@ -570,11 +577,11 @@ vector<int> Solver::BestMoves() {
 						if (c.positionEdge[i].GetColours()[j] == centre) {
 							cout << "Piece related to centre. Getting moves to position piece... ";
 							Piece::CONNECTED connect = c.positionEdge[i].GetConnectedSide(c.positionEdge[i].GetPositions()[j]);
-							cout << endl << "-----------------------------------------------------------------------------------------------------------------------------";
-							cout << "-----------------------------------------------------------------------------------------------------------------------------";
-							cout << "-------------------------------------------------- NEEDS COMPLETION ---------------------------------------------------------";
-							cout << "-----------------------------------------------------------------------------------------------------------------------------";
-							cout << "-----------------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << endl << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "---------------------------------------------- NEEDS COMPLETION ------------------------------------------------------" << endl;
+							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
 							break;
 						} // ------------------------------------- Need implementation, does get triggered in some situations -------------------------------------------
 					}
@@ -595,6 +602,10 @@ vector<int> Solver::BestMoves() {
 				for (int j = 0; j < c.twoCorner[i].GetSize(); j++)
 					if (c.twoCorner[i].GetColours()[j] == centre)
 						corners.push_back(c.twoCorner[i]);
+			for (int i = 0; i < c.rotateCorner.size(); i++)
+				for (int j = 0; j < c.rotateCorner[i].GetSize(); j++)
+					if (c.rotateCorner[i].GetColours()[j] == centre)
+						corners.push_back(c.rotateCorner[i]);
 			for (int i = 0; i < c.positionCorner.size(); i++)
 				for (int j = 0; j < c.positionCorner[i].GetSize(); j++)
 					if (c.positionCorner[i].GetColours()[j] == centre)
@@ -608,7 +619,7 @@ vector<int> Solver::BestMoves() {
 						if (corners[i].GetColours()[j] == centre && corners[i].GetPositions()[j] != oppCentre &&
 							(corners[i].GetPositions()[indexOne] != centre && corners[i].GetPositions()[indexTwo] != centre &&
 								corners[i].GetPositions()[j] != centre)) {
-							cout << "Corner piece located in bottom layer with centre colour not in \"base\" layer. ";
+							cout << "Corner piece located in bottom layer with centre colour not in base layer. ";
 							for (int k = 0; k < corners[i].GetSize(); k++)
 								cout << corners[i].GetColours()[k];
 							cout << ". Getting moves... ";
@@ -628,7 +639,11 @@ vector<int> Solver::BestMoves() {
 							(corners[i].GetPositions()[indexOne] == centre || corners[i].GetPositions()[indexTwo] == centre ||
 								corners[i].GetPositions()[j] == centre)) {
 							cout << "Piece located in first layer, must move out of layer first then position. Getting moves to get out of first layer... ";
+							for (int k = 0; k < corners[i].GetSize(); k++)
+								cout << corners[i].GetColours()[k];
+							cout << "... ";
 							if (corners[i].GetPositions()[j] == centre) {
+								cout << "centre colour is in centre side... ";
 								int move = ParseSide(corners[i].GetPositions()[indexOne], corners[i].GetColours()[j], corners[i].GetPositions()[indexTwo],
 									corners[i].GetConnectedSide(corners[i].GetPositions()[indexOne]));
 								moves.push_back(move);
@@ -649,16 +664,81 @@ vector<int> Solver::BestMoves() {
 									corners[i].GetColours()[indexOne], corners[i].GetColours()[indexTwo]);
 								for (int k = 0; k < nMoves.size(); k++)
 									moves.push_back(nMoves[k]);
-								cout << "Done" << endl;
 							} else {
-
+								cout << "centre colour isn't in centre side";
+								int index;
+								int other;
+								if (corners[i].GetPositions()[indexOne] == centre) {
+									index = indexTwo;
+									other = indexOne;
+								} else {
+									index = indexOne;
+									other = indexTwo;
+								}
+								int move = ParseSide(corners[i].GetPositions()[index], corners[i].GetColours()[j], corners[i].GetPositions()[j],
+									corners[i].GetConnectedSide(corners[i].GetPositions()[index]));
+								moves.push_back(move);
+								int nextMove = ParseSide(oppCentre, corners[i].GetPositions()[j], corners[i].GetPositions()[index],
+									corners[i].GetConnectedSide((Piece::POSITIONS)oppCentre));
+								moves.push_back(nextMove);
+								moves.push_back((move + 6) % 12);
+								vector<int> nMoves = PositionCorner(corners[i], corners[i].GetPositions()[j], corners[i].GetColours()[j], corners[i].GetPositions()[index],
+									corners[i].GetColours()[other], corners[i].GetColours()[index]);
+								for (int k = 0; k < nMoves.size(); k++)
+									moves.push_back(nMoves[k]);
 							}
+							cout << "Done" << endl;
+							break;
+						} else  if (corners[i].GetColours()[j] == centre && corners[i].GetPositions()[j] == oppCentre &&
+							(corners[i].GetPositions()[indexOne] != centre && corners[i].GetPositions()[indexTwo] != centre &&
+								corners[i].GetPositions()[j] != centre)) {
+							cout << "Corner piece is in base layer with centre colour in base side. Getting moves... ";
+							for (int k = 0; k < corners[i].GetSize(); k++)
+								cout << corners[i].GetColours()[k];
+							cout << "... ";
+							Piece::CONNECTED connect = corners[i].GetConnectedSide((Piece::POSITIONS)oppCentre);
+							int start = connect.GetNum((Piece::COLOURS)corners[i].GetPositions()[indexTwo]);
+							int end = connect.GetNum((Piece::COLOURS)corners[i].GetColours()[indexOne]) + size(connect.connected);
+							int distance = (end - start) % size(connect.connected);
+							int move;
+							if (distance == 1 || distance == 3) {
+								move = ParseSide(oppCentre, corners[i].GetPositions()[indexTwo], corners[i].GetColours()[indexOne], connect);
+								moves.push_back(move);
+							} else if (distance == 2) {
+								move = move = ParseSide(oppCentre, corners[i].GetPositions()[indexTwo], corners[i].GetPositions()[indexOne], connect);
+								moves.push_back(move);
+								moves.push_back(move);
+							}
+							int moveUndo = ParseSide(corners[i].GetColours()[indexOne], corners[i].GetColours()[j], corners[i].GetColours()[indexTwo],
+								corners[i].GetConnectedSide((Piece::POSITIONS)corners[i].GetColours()[indexOne]));
+							moves.push_back(moveUndo);
+							move = ParseSide(oppCentre, corners[i].GetColours()[indexTwo], corners[i].GetColours()[indexOne],
+								corners[i].GetConnectedSide((Piece::POSITIONS)oppCentre));
+							moves.push_back(move);
+							moves.push_back(move);
+							moves.push_back((moveUndo + 6) % 12);
+							vector<int> nMoves = PositionCorner(corners[i], corners[i].GetColours()[indexTwo], corners[i].GetColours()[j],
+								corners[i].GetColours()[indexOne], corners[i].GetColours()[indexOne], corners[i].GetColours()[indexTwo]);
+							for (int k = 0; k < nMoves.size(); k++)
+								moves.push_back(nMoves[k]);
+							cout << "Done" << endl;
+							break;
+						} else {
+							cout << endl << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "---------------------------------------------- MISSING STATE SEARCH --------------------------------------------------" << endl;
+							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
+							cout << "Piece: ";
+							for (int k = 0; k < corners[i].GetSize(); k++)
+								cout << corners[i].GetColours()[k];
+							cout << ". Positions: ";
+							for (int k = 0; k < corners[i].GetSize(); k++)
+								cout << corners[i].GetPositions()[k];
+							cout << ". Corners size: " << corners.size() << ". i: " << i << ". Moves: " << moves.size() << "." << endl;
 						}
 					}
 				}
-			}
-			if (moves.size() == 0 && c.rotateCorner.size() > 0) {
-				cout << "Piece needs to be rotated to be solved. Getting moves... ";
 			}
 		} else {
 			cout << "First layer solved. Checking if second layer is solved... ";
@@ -672,7 +752,7 @@ vector<int> Solver::BestMoves() {
 	}
 	if (moves.size() == 0)
 		moves.push_back(12);
-	cout << "Done." << endl;
+	cout << "Moves Found." << endl;
 	return moves;
 }
 
