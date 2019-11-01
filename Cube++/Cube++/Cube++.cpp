@@ -142,8 +142,6 @@ int main() {
 		<< endl << "                    green (g) is top and blue (b) is bottom)" << endl;
 	Cube cube;
 	Solver solver(cube);
-	cube.RotateSide(Piece::bottom, true);
-	solver.CheckLayer(0, 'g');
 	random_device rd;
 	do {
 		for (int i = 0; i < 12; i++)
