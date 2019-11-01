@@ -9,6 +9,7 @@ private:
 	char oppCentre = NULL;
 	Cube cube;
 	bool CheckLayer(int no, char layerCentre);
+	bool CheckMidLayer(char sideOne, char sideTwo);
 	struct COUNTS {
 		vector<Piece> centres;
 		vector<Piece> solvedEdge;
@@ -27,7 +28,7 @@ private:
 	COUNTS GetCounts(Piece *pieces, int SIZE);
 	int ParseSide(char side, char from, char to, Piece::CONNECTED connect);
 	bool HasSolvedPieces(char side, COUNTS counts, Piece::TYPE type);
-	vector<int> PositionCorner(Piece p, char centrePos, char centreCol, char indexPos, char indexCol, char otherCol);
+	vector<int> PositionCorner(char centrePos, char centreCol, char indexPos, char indexCol, char otherCol);
 public:
 	Solver(Cube cube);
 	void SetCube(Cube cube);
