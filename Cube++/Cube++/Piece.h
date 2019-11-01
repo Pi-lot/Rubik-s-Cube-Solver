@@ -17,17 +17,18 @@ public:
 	POSITIONS *GetPositions();
 	void SetPositions(POSITIONS *position);
 	COLOURS *GetColours();
-	struct CONNECTED {
+	static inline struct CONNECTED {
 		POSITIONS connected[4];
 		int GetNum(POSITIONS side);
 		int GetNum(COLOURS side);
-	} TOP = { back, right, front, left },
+	};
+	static inline CONNECTED TOP = { back, right, front, left },
 	BOTTOM = { front, right, back, left },
 	FRONT = { top, right, bottom, left },
 	BACK = { top, left, bottom, right },
 	LEFT = { top, front, bottom, back },
 	RIGHT = { top, back, bottom, front };
-	CONNECTED GetConnectedSide(Piece::POSITIONS side);
+	static CONNECTED GetConnectedSide(Piece::POSITIONS side);
 	bool operator== (Piece piece);
 protected:
 	TYPE pieceType;
