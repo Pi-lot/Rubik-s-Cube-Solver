@@ -723,7 +723,7 @@ vector<int> Solver::BestMoves() {
 								moves.push_back(nMoves[k]);
 							cout << "Done" << endl;
 							break;
-						} else {
+						}/* else {
 							cout << endl << "----------------------------------------------------------------------------------------------------------------------" << endl;
 							cout << "----------------------------------------------------------------------------------------------------------------------" << endl;
 							cout << "---------------------------------------------- MISSING STATE SEARCH --------------------------------------------------" << endl;
@@ -736,17 +736,129 @@ vector<int> Solver::BestMoves() {
 							for (int k = 0; k < corners[i].GetSize(); k++)
 								cout << corners[i].GetPositions()[k];
 							cout << ". Corners size: " << corners.size() << ". i: " << i << ". Moves: " << moves.size() << "." << endl;
-						}
+						}*/
 					}
 				}
 			}
 		} else {
 			cout << "First layer solved. Checking if second layer is solved... ";
 			if (!CheckLayer(1, centre)) {
-				cout << " Second layer not solved. Solve second layer... " << endl;
-
+				cout << "Second layer not solved. Solve second layer... Getting pieces to move... " << endl;
+				vector<Piece> relevant;
+				for (int i = 0; i < c.oneEdge.size(); i++) {
+					bool base = false;
+					for (int j = 0; j < c.oneEdge[i].GetSize(); j++) {
+						if (c.oneEdge[i].GetColours()[j] == oppCentre)
+							base = true;
+					}
+					if (!base)
+						relevant.push_back(c.oneEdge[i]);
+				}
+				for (int i = 0; i < c.twoEdge.size(); i++) {
+					bool base = false;
+					for (int j = 0; j < c.twoEdge[i].GetSize(); j++) {
+						if (c.twoEdge[i].GetColours()[j] == oppCentre)
+							base = true;
+					}
+					if (!base)
+						relevant.push_back(c.twoEdge[i]);
+				}
+				for (int i = 0; i < c.positionEdge.size(); i++) {
+					bool base = false;
+					for (int j = 0; j < c.positionEdge[i].GetSize(); j++) {
+						if (c.positionEdge[i].GetColours()[j] == oppCentre)
+							base = true;
+					}
+					if (!base)
+						relevant.push_back(c.positionEdge[i]);
+				}
+				cout << "Done. Valid pieces: " << relevant.size() << ". ";
+				if (moves.size() == 0 && relevant.size() > 0) {
+					cout << "Finding piece position... ";
+					for (int i = 0; i < relevant.size(); i++) {
+						if (moves.size() == 0) {
+							for (int j = 0; j < relevant[i].GetSize(); j++) {
+								int index = (j + 1) % c.twoEdge[i].GetSize();
+								if (relevant[i].GetPositions()[j] == oppCentre) {
+									cout << "Piece located within base layer. Getting moves to solve... ";
+									for (int k = 0; k < relevant[i].GetSize(); k++)
+										cout << relevant[i].GetColours()[k];
+									cout << "... ";
+									Piece::CONNECTED connect = relevant[i].GetConnectedSide((Piece::POSITIONS)oppCentre);
+									int indexPos = connect.GetNum(relevant[i].GetPositions()[index]);
+									int thisPos = connect.GetNum(relevant[i].GetColours()[j]);
+									int movePos = connect.GetNum(relevant[i].GetColours()[index]);
+									int direction = movePos - thisPos;
+									if (direction != 1 || direction != -1) {
+										if (direction == 3)
+											direction = -1;
+										else if (direction == -3)
+											direction = 1;
+										else if (direction != 1 || direction != 1)
+											cout << "Invalid direction!!! ";
+									}
+									movePos += size(connect.connected) + direction;
+									movePos %= size(connect.connected);
+									direction = movePos + size(connect.connected) - indexPos;
+									direction %= size(connect.connected);
+									int move;
+									if (direction == 1) {
+										move = ParseSide(oppCentre, connect.connected[indexPos], connect.connected[movePos], connect);
+										moves.push_back(move);
+									} else if (direction == 2) {
+										move = ParseSide(oppCentre, relevant[i].GetColours()[index], connect.connected[movePos], connect);
+										moves.push_back(move);
+										moves.push_back(move);
+									} else {
+										move = ParseSide(oppCentre, connect.connected[indexPos], connect.connected[movePos], connect);
+									}
+									int secondMove = ParseSide(relevant[i].GetColours()[j], centre, relevant[i].GetColours()[index],
+										relevant[i].GetConnectedSide((Piece::POSITIONS)relevant[i].GetColours()[j]));
+									moves.push_back(secondMove);
+									moves.push_back((move + 6) % 12);
+									moves.push_back((secondMove + 6) % 12);
+									move = ParseSide(oppCentre, relevant[i].GetColours()[index], relevant[i].GetColours()[j], connect);
+									moves.push_back(move);
+									secondMove = ParseSide(relevant[i].GetColours()[index], centre, relevant[i].GetColours()[j],
+										relevant[i].GetConnectedSide((Piece::POSITIONS)relevant[i].GetColours()[index]));
+									moves.push_back(secondMove);
+									moves.push_back((move + 6) % 12);
+									moves.push_back((secondMove + 6) % 12);
+								}
+							}
+						}
+					}
+				}
+				if (moves.size() == 0) {
+					cout << "Only pieces are located within the second layer. Getting moves to move base layer... ";
+					for (int i = 0; i < c.rotateEdge.size(); i++) {
+						bool base = false;
+						for (int j = 0; j < c.rotateEdge[i].GetSize(); j++) {
+							if (c.rotateEdge[i].GetColours()[j] == oppCentre)
+								base = true;
+						}
+						if (!base)
+							relevant.push_back(c.rotateEdge[i]);
+					}
+					if (relevant.size() > 0) {
+						int move = ParseSide(relevant[0].GetPositions()[0], centre, relevant[0].GetPositions()[1],
+							relevant[0].GetConnectedSide(relevant[0].GetPositions()[0]));
+						moves.push_back(move);
+						int secondMove = ParseSide(oppCentre, relevant[0].GetPositions()[1], relevant[0].GetPositions()[0],
+							relevant[0].GetConnectedSide((Piece::POSITIONS)oppCentre));
+						moves.push_back(secondMove);
+						moves.push_back((move + 6) % 12);
+						moves.push_back(secondMove);
+						move = ParseSide(relevant[0].GetPositions()[1], centre, relevant[0].GetPositions()[0],
+							relevant[0].GetConnectedSide(relevant[0].GetPositions()[1]));
+						moves.push_back(move);
+						moves.push_back((secondMove + 6) % 12);
+						moves.push_back((move + 6) % 12);
+					}
+				}
+				cout << "Done." << endl;
 			} else {
-				cout << "Second layer solved. Checking third layer cross state... ";
+				cout << "Second layer solved. Checking third layer cross state...";
 			}
 		}
 	}
