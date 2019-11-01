@@ -1020,7 +1020,6 @@ vector<int> Solver::BestMoves() {
 							cout << "No Edges are solved. Getting moves... ";
 							int move = ParseSide(oppCentre, connect.connected[0], connect.connected[1], connect);
 							moves.push_back(move);
-							moves.push_back(move);
 						}
 						cout << "Done." << endl;
 					}
