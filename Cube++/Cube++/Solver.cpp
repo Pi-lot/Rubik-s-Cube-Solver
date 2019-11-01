@@ -859,6 +859,72 @@ vector<int> Solver::BestMoves() {
 				cout << "Done." << endl;
 			} else {
 				cout << "Second layer solved. Checking third layer cross state...";
+				vector<Piece> edges;
+				for (int i = 0; i < c.oneEdge.size(); i++) {
+					edges.push_back(c.oneEdge[i]);
+				}
+				for (int i = 0; i < c.twoEdge.size(); i++) {
+					edges.push_back(c.twoEdge[i]);
+				}
+				for (int i = 0; i < c.positionEdge.size(); i++) {
+					edges.push_back(c.positionEdge[i]);
+				}
+				for (int i = 0; i < c.rotateEdge.size(); i++) {
+					edges.push_back(c.rotateEdge[i]);
+				}
+				vector<Piece> correct;
+				for (int i = 0; i < edges.size(); i++) {
+					for (int j = 0; j < edges[i].GetSize(); j++) {
+						if (edges[i].GetColours()[j] == oppCentre && edges[i].GetPositions()[j] == oppCentre)
+							correct.push_back(edges[i]);
+					}
+				}
+				cout << "Cross State: " << correct.size() << ". ";
+				if (correct.size() != 4) {
+					cout << "Cross incomplete, ";
+					Piece::CONNECTED base = edges[0].GetConnectedSide((Piece::POSITIONS)oppCentre);
+					char sideOne;
+					char sideTwo;
+					if (correct.size() == 0) {
+						cout << "No Cross. Create L(ish) shape... ";
+						sideOne = base.connected[1];
+						sideTwo = base.connected[0];
+					} else {
+						int one;
+						int two;
+						for (int i = 0; i < edges[0].GetSize(); i++) {
+							if (correct[0].GetColours()[i] == oppCentre)
+								one = base.GetNum(correct[0].GetPositions()[(i + 1) % correct[0].GetSize()]);
+							if (correct[1].GetColours()[i] == oppCentre)
+								two = base.GetNum(correct[1].GetPositions()[(i + 1) % correct[1].GetSize()]);
+						}
+						if (one - two == 2 || one - two == -2) {
+							sideOne = base.connected[(one + 1) % size(base.connected)];
+							sideTwo = base.connected[one];
+						} else {
+							if (one == two + 1) {
+								sideOne = base.connected[two];
+								sideTwo = base.connected[one];
+							} else {
+								sideOne = base.connected[one];
+								sideTwo = base.connected[two];
+							}
+						}
+					}
+					int moveOne = ParseSide(sideOne, oppCentre, sideTwo, edges[0].GetConnectedSide((Piece::POSITIONS)sideOne));
+					moves.push_back(moveOne);
+					int moveTwo = ParseSide(sideTwo, sideOne, oppCentre, edges[0].GetConnectedSide((Piece::POSITIONS)sideTwo));
+					moves.push_back(moveTwo);
+					int moveThree = ParseSide(oppCentre, sideTwo, sideOne, base);
+					moves.push_back(moveThree);
+					moves.push_back((moveTwo + 6) % 12);
+					moves.push_back((moveThree + 6) % 12);
+					moves.push_back((moveOne + 6) % 12);
+					cout << "Done." << endl;
+				} else {
+					cout << "Cross Complete. Check Cross sides... ";
+					cout << endl << "------------------------------------- NOT IMPLEMENTED -------------------------------------" << endl;
+				}
 			}
 		}
 	}
