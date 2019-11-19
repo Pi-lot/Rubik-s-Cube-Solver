@@ -6,10 +6,11 @@
 #include <stdlib.h>
 #include <chrono>
 #include <random>
-#include "Cube.h"
-#include "Solver.h"
 #include <vector>
+#include "Solver.h"
+#include "Rubik's Cube++ Static/Cube.h"
 
+using namespace cube;
 using namespace std;
 
 string FormatSide(string side, bool addSpaces) {

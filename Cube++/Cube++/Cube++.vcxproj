@@ -106,6 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\bryce\Source\repos\Rubiks-Cube\Rubik%27s Cube++ Static;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -151,19 +152,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Centre.cpp" />
     <ClCompile Include="Cube++.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="Piece.cpp" />
     <ClCompile Include="Solver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Centre.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="Piece.h">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </ClInclude>
     <ClInclude Include="Solver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Rubiks-Cube\Rubik's Cube++ Static\Rubik's Cube++ Static\Rubik's Cube++ Static.vcxproj">
+      <Project>{904ae518-e0dc-4323-8fe1-2a73359b8db2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

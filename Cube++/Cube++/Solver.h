@@ -1,7 +1,10 @@
 #pragma once
-#include "Cube.h"
+#include "Rubik's Cube++ Static/Cube.h"
+#include "Rubik's Cube++ Static/Piece.h"
 #include <iostream>
 #include <vector>
+
+using namespace cube;
 
 class Solver {
 private:
